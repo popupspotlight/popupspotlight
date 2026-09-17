@@ -12,4 +12,23 @@ export type PopupBusiness = {
   description: string | null
   phone: string | null
   status: string
+  tier: 'listed' | 'featured' | 'spotlighted'
+}
+
+export type PopupPhoto = {
+  id: string
+  popup_id: string
+  url: string
+  sort_order: number
+}
+
+export type Review = {
+  id: string
+  popup_id: string
+  reviewer_name: string
+  rating: number
+  text: string | null
+  owner_response: string | null
+  verified: boolean
+  created_at: string
 }
