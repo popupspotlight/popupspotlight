@@ -1,86 +1,98 @@
-const TIERS = [
-  {
-    name: 'Listed',
-    price: 'Free',
-    cadence: '',
-    description: 'Get discovered. List your pop-up in the directory at no cost.',
-    features: [
-      'Public listing with photo, description, and contact info',
-      'Appears in category browsing',
-      'Consumers can call you directly',
-    ],
-  },
-  {
-    name: 'Featured',
-    price: '$79',
-    cadence: '/month',
-    description: 'Stand out in your category and start building repeat visitors.',
-    features: [
-      'Everything in Listed',
-      'Photo gallery on your listing',
-      'Featured placement within your category',
-      'Respond publicly to reviews',
-    ],
-    highlight: true,
-  },
-  {
-    name: 'Spotlighted',
-    price: '$199',
-    cadence: '/month',
-    description: 'Top billing across the whole platform, plus the data to prove it.',
-    features: [
-      'Everything in Featured',
-      'Top placement across all categories',
-      'Homepage feature rotation',
-      'View and booking analytics',
-      'Priority access to the job board',
-    ],
-  },
-]
+import { supabase, PopupBusiness } from '@/lib/supabase'
+import { CATEGORY_META, Category } from '@/lib/categories'
 
-export default function ListYourBusinessPage() {
+async function getBusinesses(): Promise<PopupBusiness[]> {
+  const { data, error } = await supabase
+    .from('popup_businesses')
+    .select('id, name, category, description, phone, status')
+    .eq('status', 'active')
+
+  if (error) {
+    console.error(error)
+    return []
+  }
+  return data ?? []
+}
+
+function formatPhone(phone: string | null) {
+  if (!phone) return null
+  const digits = phone.replace(/\D/g, '')
+  if (digits.length !== 10) return phone
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
+}
+
+export default async function DiscoveryPage() {
+  const businesses = await getBusinesses()
+  const categories = Object.keys(CATEGORY_META) as Category[]
+
   return (
-    <main className="max-w-5xl mx-auto px-6 py-16">
-      <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight max-w-xl">
-        Get your pop-up in front of the neighborhood.
-      </h1>
-      <p className="mt-4 text-lg text-[var(--ink-soft)] max-w-xl">
-        Pick a pass. Upgrade or downgrade any time — there's no contract, because pop-ups
-        shouldn't have to sign one either.
-      </p>
+    <main>
+      <section className="max-w-5xl mx-auto px-6 pt-16 pb-10">
+        <h1 className="font-display text-5xl sm:text-6xl font-semibold tracking-tight leading-[1.05] max-w-2xl">
+          Find what's popping up near you.
+        </h1>
+        <p className="mt-5 text-lg text-[var(--ink-soft)] max-w-xl">
+          Hat bars, jewelry pop-ups, food trucks, and mobile beauty — all the temporary
+          storefronts in Denver and Boulder, in one place.
+        </p>
 
-      <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-10">
-        {TIERS.map((tier) => (
-          <div key={tier.name} className="ticket flex flex-col">
-            <div className="p-6" style={{ minHeight: 168 }}>
-              {tier.highlight && (
-                <span className="text-xs font-medium bg-[var(--gold)] text-white px-2.5 py-1 rounded-full">
-                  Most popular
-                </span>
-              )}
-              <h2 className="font-display text-xl font-semibold mt-3">{tier.name}</h2>
-              <p className="mt-2">
-                <span className="font-display text-3xl font-semibold">{tier.price}</span>
-                <span className="text-[var(--ink-soft)]">{tier.cadence}</span>
-              </p>
-            </div>
-            <div className="ticket-stub px-6 pb-6 flex-1 flex flex-col">
-              <p className="text-sm text-[var(--ink-soft)] mb-4">{tier.description}</p>
-              <ul className="space-y-2.5 text-sm flex-1">
-                {tier.features.map((f) => (
-                  <li key={f} className="flex gap-2">
-                    <span aria-hidden="true">—</span>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <button className="mt-6 w-full py-2.5 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors">
-                {tier.price === 'Free' ? 'Get listed' : 'Get started'}
-              </button>
-            </div>
+        <div className="mt-8 flex gap-2 flex-wrap">
+          {categories.map((cat) => (
+            <span
+              key={cat}
+              className="text-sm px-4 py-1.5 rounded-full border-2 border-[var(--ink)] font-medium"
+            >
+              {CATEGORY_META[cat].label}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-6 pb-24">
+        {businesses.length === 0 ? (
+          <div className="border-2 border-dashed border-[var(--line)] rounded-xl p-12 text-center text-[var(--ink-soft)]">
+            No active listings yet. Once a pop-up owner publishes, it shows up here.
           </div>
-        ))}
-      </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {businesses.map((b) => {
+              const meta = CATEGORY_META[b.category as Category]
+              return (
+                <div
+                  key={b.id}
+                  className="border-2 border-[var(--ink)] rounded-xl overflow-hidden bg-white flex flex-col"
+                >
+                  <div
+                    className="h-2"
+                    style={{ background: meta?.accent ?? 'var(--ink)' }}
+                  />
+                  <div className="p-5 flex-1 flex flex-col">
+                    <span
+                      className="self-start text-xs font-medium px-2.5 py-1 rounded-full mb-3"
+                      style={{ background: meta?.bg, color: meta?.text }}
+                    >
+                      {meta?.label ?? b.category}
+                    </span>
+                    <h3 className="font-display text-lg font-semibold">{b.name}</h3>
+                    {b.description && (
+                      <p className="text-sm text-[var(--ink-soft)] mt-2 flex-1">
+                        {b.description}
+                      </p>
+                    )}
+                    {b.phone && (
+                      <p className="text-sm text-[var(--ink)] mt-4 font-medium">
+                        {formatPhone(b.phone)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </section>
     </main>
   )
 }
+
+export const revalidate = 60
