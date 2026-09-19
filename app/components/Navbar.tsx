@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import AuthNav from './AuthNav'
 
 export default function Navbar() {
   return (
@@ -14,6 +15,7 @@ export default function Navbar() {
           <Link href="/job-board" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
             Job Board
           </Link>
+          <AuthNav />
           <Link
             href="/list-your-business"
             className="text-sm font-medium bg-[var(--ink)] text-[var(--paper)] px-4 py-2 rounded-full hover:opacity-90"
