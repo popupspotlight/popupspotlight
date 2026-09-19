@@ -27,7 +27,7 @@ export default function JobBoardLandingPage() {
             in your area — or wherever you're willing to travel.
           </p>
           <Link
-            href="/workers/new"
+            href="/signup"
             className="mt-6 text-center py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
           >
             Create your profile
@@ -56,8 +56,8 @@ export default function JobBoardLandingPage() {
       </div>
 
       <div className="mt-10 text-center">
-        <Link href="/jobs" className="text-sm text-[var(--ink-soft)] hover:underline">
-          Already have a profile? Browse open jobs →
+        <Link href="/login" className="text-sm text-[var(--ink-soft)] hover:underline">
+          Already have an account? Log in →
         </Link>
       </div>
     </main>
