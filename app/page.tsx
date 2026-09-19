@@ -92,7 +92,7 @@ export default async function DiscoveryPage({
         </h1>
         <p className="mt-5 text-lg text-[var(--ink-soft)] max-w-xl">
           Hat bars, jewelry pop-ups, food trucks, and mobile beauty — all the temporary
-          storefronts in Denver and Boulder, in one place.
+          storefronts from around the country, in one place.
         </p>
 
         <div className="mt-8 flex gap-2 flex-wrap">

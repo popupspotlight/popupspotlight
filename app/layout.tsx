@@ -5,7 +5,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'PopupSpotlight',
-  description: 'Discover, book, and staff pop-up businesses in Denver and Boulder.',
+  description: 'Discover, book, and staff pop-up businesses across the country.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

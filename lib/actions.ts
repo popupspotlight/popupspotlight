@@ -3,6 +3,44 @@
 import { supabase } from './supabase'
 import { revalidatePath } from 'next/cache'
 
+export async function createWorkerProfile(
+  _prevState: { error?: string; success?: boolean; workerId?: string },
+  formData: FormData
+): Promise<{ error?: string; success?: boolean; workerId?: string }> {
+  const name = (formData.get('name') as string)?.trim()
+  const email = (formData.get('email') as string)?.trim().toLowerCase()
+  const phone = (formData.get('phone') as string)?.trim() || null
+  const bio = (formData.get('bio') as string)?.trim() || null
+  const skills = (formData.get('skills') as string)?.trim() || null
+
+  if (!name || !email) {
+    return { error: 'Name and email are required.' }
+  }
+
+  const { data: existing } = await supabase
+    .from('worker_profiles')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle()
+
+  if (existing) {
+    return { error: 'A profile with that email already exists.' }
+  }
+
+  const { data: created, error } = await supabase
+    .from('worker_profiles')
+    .insert({ name, email, phone, bio, skills })
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error(error)
+    return { error: 'Could not create your profile. Please try again.' }
+  }
+
+  return { success: true, workerId: created.id }
+}
+
 export async function applyToJob(_prevState: { error?: string; success?: boolean }, formData: FormData) {
   const jobPostId = formData.get('jobPostId') as string
   const name = (formData.get('name') as string)?.trim()

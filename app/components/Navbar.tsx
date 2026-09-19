@@ -11,8 +11,8 @@ export default function Navbar() {
           <Link href="/" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
             Discover
           </Link>
-          <Link href="/jobs" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
-            Jobs
+          <Link href="/job-board" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
+            Job Board
           </Link>
           <Link
             href="/list-your-business"
