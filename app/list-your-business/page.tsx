@@ -22,6 +22,7 @@ const TIERS = [
       'Respond publicly to reviews',
     ],
     highlight: true,
+    checkoutUrl: 'https://buy.stripe.com/6oU8wRckR9IA9kB8ifcAo00',
   },
   {
     name: 'Spotlighted',
@@ -35,6 +36,7 @@ const TIERS = [
       'View and booking analytics',
       'Priority access to the job board',
     ],
+    checkoutUrl: 'https://buy.stripe.com/4gMcN70C9bQIfIZfKHcAo01',
   },
 ]
 
@@ -74,9 +76,14 @@ export default function ListYourBusinessPage() {
                   </li>
                 ))}
               </ul>
-              <button className="mt-6 w-full py-2.5 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors">
+              <a
+                href={tier.checkoutUrl ?? 'mailto:popupspotlightinfo@gmail.com?subject=List my pop-up (Free)'}
+                target={tier.checkoutUrl ? '_blank' : undefined}
+                rel={tier.checkoutUrl ? 'noopener noreferrer' : undefined}
+                className="mt-6 block text-center w-full py-2.5 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
+              >
                 {tier.price === 'Free' ? 'Get listed' : 'Get started'}
-              </button>
+              </a>
             </div>
           </div>
         ))}

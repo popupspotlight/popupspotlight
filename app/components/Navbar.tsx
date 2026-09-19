@@ -11,6 +11,9 @@ export default function Navbar() {
           <Link href="/" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
             Discover
           </Link>
+          <Link href="/jobs" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
+            Jobs
+          </Link>
           <Link
             href="/list-your-business"
             className="text-sm font-medium bg-[var(--ink)] text-[var(--paper)] px-4 py-2 rounded-full hover:opacity-90"

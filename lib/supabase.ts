@@ -32,3 +32,36 @@ export type Review = {
   verified: boolean
   created_at: string
 }
+
+export type JobPost = {
+  id: string
+  popup_id: string
+  title: string
+  description: string | null
+  pay_rate: string | null
+  workers_needed: number
+  shift_start: string | null
+  shift_end: string | null
+  status: 'open' | 'filled' | 'closed'
+  created_at: string
+}
+
+export type WorkerProfile = {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  bio: string | null
+  skills: string | null
+  created_at: string
+}
+
+export type WorkerReview = {
+  id: string
+  worker_id: string
+  popup_id: string
+  rating: number
+  text: string | null
+  direction: 'employer_on_worker' | 'worker_on_employer'
+  created_at: string
+}
