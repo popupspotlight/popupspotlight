@@ -15,6 +15,9 @@ export type PopupBusiness = {
   tier: 'listed' | 'featured' | 'spotlighted'
   city: string | null
   state: string | null
+  zip: string | null
+  lat: number | null
+  lng: number | null
 }
 
 export type PopupPhoto = {
