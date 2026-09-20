@@ -37,6 +37,14 @@ export default function PostEventForm() {
       setError('Could not submit your event. Please try again.')
       return
     }
+
+    // Send a passwordless login link so they can come back and track bids
+    // without a separate signup step.
+    await supabase.auth.signInWithOtp({
+      email: formData.get('email') as string,
+      options: { shouldCreateUser: true },
+    })
+
     setSuccess(true)
   }
 
@@ -46,7 +54,8 @@ export default function PostEventForm() {
         <p className="font-medium">Event posted.</p>
         <p className="text-sm text-[var(--ink-soft)] mt-1 mb-4">
           Businesses can now submit proposals — up to 5 per event, so you won't be
-          overwhelmed. We'll reach out as bids come in.
+          overwhelmed. We've sent a login link to your email so you can come back and
+          see bids anytime, no password needed.
         </p>
         <Link href="/" className="text-sm underline">Back to home</Link>
       </div>
@@ -106,7 +115,13 @@ export default function PostEventForm() {
       </div>
       <div>
         <label className="text-xs text-[var(--ink-soft)]">Budget range (optional)</label>
-        <input name="budget_range" placeholder="$500–$1,000" className="w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1" />
+        <select name="budget_range" defaultValue="" className="w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1 bg-white">
+          <option value="">Prefer not to say</option>
+          <option value="Under $2,500">Under $2,500</option>
+          <option value="$2,500 - $5,000">$2,500 - $5,000</option>
+          <option value="$5,000 - $10,000">$5,000 - $10,000</option>
+          <option value="$10,000+">$10,000+</option>
+        </select>
       </div>
       <div>
         <label className="text-xs text-[var(--ink-soft)]">Tell businesses about your event</label>

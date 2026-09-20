@@ -66,6 +66,9 @@ export default function HomePage() {
         >
           Post your event
         </Link>
+        <Link href="/my-events/login" className="block mt-3 text-xs text-[var(--ink-soft)] hover:underline">
+          Already posted? Track your event →
+        </Link>
       </div>
     </main>
   )

@@ -1,31 +1,108 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { supabase, EventRequest, EventBid } from '@/lib/supabase'
+import { supabase, EventRequest, PopupBusiness } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 
-async function getOpenEvents() {
-  const { data, error } = await supabase
-    .from('event_requests')
-    .select('*')
-    .eq('status', 'open')
-    .order('created_at', { ascending: false })
+type Access = 'checking' | 'needs-login' | 'needs-upgrade' | 'granted'
 
-  if (error) {
-    console.error(error)
-    return []
+export default function EventsPage() {
+  const router = useRouter()
+  const [access, setAccess] = useState<Access>('checking')
+  const [events, setEvents] = useState<EventRequest[]>([])
+  const [bidCounts, setBidCounts] = useState<Record<string, number>>({})
+
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!data.session) {
+        setAccess('needs-login')
+        return
+      }
+
+      const { data: paidBusiness } = await supabase
+        .from('popup_businesses')
+        .select('id')
+        .eq('owner_id', data.session.user.id)
+        .in('tier', ['featured', 'spotlighted'])
+        .eq('status', 'active')
+        .limit(1)
+        .maybeSingle()
+
+      if (!paidBusiness) {
+        setAccess('needs-upgrade')
+        return
+      }
+
+      setAccess('granted')
+
+      const { data: openEvents } = await supabase
+        .from('event_requests')
+        .select('*')
+        .eq('status', 'open')
+        .order('created_at', { ascending: false })
+
+      const eventList = (openEvents as EventRequest[]) ?? []
+      setEvents(eventList)
+
+      const { data: bids } = await supabase.from('event_bids').select('event_request_id')
+      const counts: Record<string, number> = {}
+      ;(bids as { event_request_id: string }[] | null)?.forEach((b) => {
+        counts[b.event_request_id] = (counts[b.event_request_id] ?? 0) + 1
+      })
+      setBidCounts(counts)
+    })
+  }, [router])
+
+  if (access === 'checking') return null
+
+  if (access === 'needs-login') {
+    return (
+      <main className="max-w-2xl mx-auto px-6 py-16 text-center">
+        <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
+          Want to bid on more events in your area?
+        </h1>
+        <p className="mt-4 text-lg text-[var(--ink-soft)]">
+          Businesses post their events here, and pop-ups like yours submit proposals
+          directly. List your business to start bidding.
+        </p>
+        <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <Link
+            href="/list-your-business"
+            className="px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
+          >
+            List your business
+          </Link>
+          <Link
+            href="/login?next=/events"
+            className="px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
+          >
+            Log in
+          </Link>
+        </div>
+      </main>
+    )
   }
-  return (data ?? []) as EventRequest[]
-}
 
-async function getBidCounts() {
-  const { data } = await supabase.from('event_bids').select('event_request_id')
-  const counts: Record<string, number> = {}
-  ;(data as { event_request_id: string }[] | null)?.forEach((b) => {
-    counts[b.event_request_id] = (counts[b.event_request_id] ?? 0) + 1
-  })
-  return counts
-}
-
-export default async function EventsPage() {
-  const [events, bidCounts] = await Promise.all([getOpenEvents(), getBidCounts()])
+  if (access === 'needs-upgrade') {
+    return (
+      <main className="max-w-2xl mx-auto px-6 py-16 text-center">
+        <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
+          Want to bid on more events in your area?
+        </h1>
+        <p className="mt-4 text-lg text-[var(--ink-soft)]">
+          Bidding on events is available on Featured and Spotlighted plans — upgrade
+          your listing to start submitting proposals.
+        </p>
+        <Link
+          href="/list-your-business"
+          className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
+        >
+          List your business
+        </Link>
+      </main>
+    )
+  }
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12">
@@ -73,5 +150,3 @@ export default async function EventsPage() {
     </main>
   )
 }
-
-export const revalidate = 30

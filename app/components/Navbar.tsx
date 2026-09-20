@@ -16,7 +16,7 @@ export default function Navbar() {
             Job Board
           </Link>
           <Link href="/events" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
-            Events
+            Bid Events
           </Link>
           <AuthNav />
           <Link
