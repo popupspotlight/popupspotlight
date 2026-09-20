@@ -1,12 +1,14 @@
 import Link from 'next/link'
-import { supabase, PopupBusiness, Review } from '@/lib/supabase'
+import { supabase, PopupBusiness } from '@/lib/supabase'
 import { CATEGORY_META, Category } from '@/lib/categories'
 
-async function getBusinesses(): Promise<PopupBusiness[]> {
-  const { data, error } = await supabase
-    .from('popup_businesses')
-    .select('id, name, category, description, phone, status, tier')
-    .eq('status', 'active')
+async function getBusinesses(category?: string, city?: string): Promise<PopupBusiness[]> {
+  let query = supabase.from('popup_businesses').select('*').eq('status', 'active')
+
+  if (category) query = query.eq('category', category)
+  if (city) query = query.ilike('city', `%${city}%`)
+
+  const { data, error } = await query
 
   if (error) {
     console.error(error)
@@ -43,8 +45,6 @@ function dayOfYear() {
   return Math.floor(diff / 86400000)
 }
 
-// Rotates which Spotlighted business leads, day by day, so no one business
-// always sits first. Everyone in the tier gets an equal turn over time.
 function rotate<T>(arr: T[], offset: number): T[] {
   if (arr.length === 0) return arr
   const n = offset % arr.length
@@ -56,11 +56,17 @@ const TIER_WEIGHT: Record<string, number> = { spotlighted: 0, featured: 1, liste
 export default async function DiscoveryPage({
   searchParams,
 }: {
-  searchParams: { sort?: string }
+  searchParams: { sort?: string; category?: string; city?: string }
 }) {
-  const [businesses, reviewStats] = await Promise.all([getBusinesses(), getReviewStats()])
-  const categories = Object.keys(CATEGORY_META) as Category[]
+  const category = searchParams.category ?? ''
+  const city = searchParams.city ?? ''
   const sort = searchParams.sort ?? 'suggested'
+
+  const [businesses, reviewStats] = await Promise.all([
+    getBusinesses(category, city),
+    getReviewStats(),
+  ])
+  const categories = Object.keys(CATEGORY_META) as Category[]
 
   let spotlighted = businesses.filter((b) => b.tier === 'spotlighted')
   spotlighted = rotate(spotlighted, dayOfYear()).slice(0, 5)
@@ -77,11 +83,19 @@ export default async function DiscoveryPage({
       (a, b) => (reviewStats[b.id]?.count ?? 0) - (reviewStats[a.id]?.count ?? 0)
     )
   } else {
-    // Suggested: rotated Spotlighted first, then Featured, then Listed
     sorted = [
       ...spotlighted,
       ...rest.sort((a, b) => TIER_WEIGHT[a.tier] - TIER_WEIGHT[b.tier]),
     ]
+  }
+
+  function sortLink(key: string) {
+    const params = new URLSearchParams()
+    if (category) params.set('category', category)
+    if (city) params.set('city', city)
+    if (key !== 'suggested') params.set('sort', key)
+    const qs = params.toString()
+    return qs ? `/?${qs}` : '/'
   }
 
   return (
@@ -91,19 +105,60 @@ export default async function DiscoveryPage({
           Find what's popping up near you.
         </h1>
         <p className="mt-5 text-lg text-[var(--ink-soft)] max-w-xl">
-          Hat bars, jewelry pop-ups, food trucks, and mobile beauty — all the temporary
+          Hat bars, jewelry pop-ups, food trucks, and mobile beauty — temporary
           storefronts from around the country, in one place.
         </p>
 
-        <div className="mt-8 flex gap-2 flex-wrap">
+        <form
+          method="get"
+          className="mt-8 flex flex-col sm:flex-row gap-3 max-w-xl border-2 border-[var(--ink)] rounded-xl p-3 bg-white"
+        >
+          <select
+            name="category"
+            defaultValue={category}
+            className="flex-1 border-2 border-[var(--line)] rounded-lg px-3 py-2 bg-white"
+          >
+            <option value="">All categories</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {CATEGORY_META[cat].label}
+              </option>
+            ))}
+          </select>
+          <input
+            name="city"
+            defaultValue={city}
+            placeholder="City (e.g. Denver)"
+            className="flex-1 border-2 border-[var(--line)] rounded-lg px-3 py-2"
+          />
+          <button
+            type="submit"
+            className="px-6 py-2 rounded-lg font-medium bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
+          >
+            Search
+          </button>
+        </form>
+
+        <div className="mt-4 flex gap-2 flex-wrap">
           {categories.map((cat) => (
-            <span
+            <Link
               key={cat}
-              className="text-sm px-4 py-1.5 rounded-full border-2 border-[var(--ink)] font-medium"
+              href={`/?category=${cat}${city ? `&city=${encodeURIComponent(city)}` : ''}`}
+              className={`text-sm px-4 py-1.5 rounded-full border-2 border-[var(--ink)] font-medium ${
+                category === cat ? 'bg-[var(--ink)] text-[var(--paper)]' : ''
+              }`}
             >
               {CATEGORY_META[cat].label}
-            </span>
+            </Link>
           ))}
+          {(category || city) && (
+            <Link
+              href="/"
+              className="text-sm px-4 py-1.5 rounded-full text-[var(--ink-soft)] underline"
+            >
+              Clear filters
+            </Link>
+          )}
         </div>
       </section>
 
@@ -111,6 +166,7 @@ export default async function DiscoveryPage({
         <div className="flex items-center justify-between mb-6">
           <span className="text-sm text-[var(--ink-soft)]">
             {businesses.length} {businesses.length === 1 ? 'listing' : 'listings'}
+            {city ? ` in ${city}` : ''}
           </span>
           <div className="flex gap-2">
             {[
@@ -120,7 +176,7 @@ export default async function DiscoveryPage({
             ].map((opt) => (
               <Link
                 key={opt.key}
-                href={opt.key === 'suggested' ? '/' : `/?sort=${opt.key}`}
+                href={sortLink(opt.key)}
                 className={`text-sm px-3 py-1.5 rounded-full border-2 border-[var(--ink)] ${
                   sort === opt.key ? 'bg-[var(--ink)] text-[var(--paper)]' : ''
                 }`}
@@ -133,7 +189,9 @@ export default async function DiscoveryPage({
 
         {sorted.length === 0 ? (
           <div className="border-2 border-dashed border-[var(--line)] rounded-xl p-12 text-center text-[var(--ink-soft)]">
-            No active listings yet. Once a pop-up owner publishes, it shows up here.
+            {category || city
+              ? 'No listings match that search yet. Try clearing a filter.'
+              : 'No active listings yet. Once a pop-up owner publishes, it shows up here.'}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
@@ -162,6 +220,11 @@ export default async function DiscoveryPage({
                       )}
                     </div>
                     <h3 className="font-display text-lg font-semibold mt-3">{b.name}</h3>
+                    {(b.city || b.state) && (
+                      <p className="text-xs text-[var(--ink-soft)] mt-0.5">
+                        {[b.city, b.state].filter(Boolean).join(', ')}
+                      </p>
+                    )}
                     {stats && (
                       <p className="text-sm text-[var(--gold)] mt-1">
                         {stats.avg.toFixed(1)} ★{' '}

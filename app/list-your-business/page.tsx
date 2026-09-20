@@ -20,6 +20,8 @@ const TIERS = [
       'Photo gallery on your listing',
       'Featured placement within your category',
       'Respond publicly to reviews',
+      'Post jobs to the job board',
+      'Collaborate with other businesses on events',
     ],
     highlight: true,
     checkoutUrl: 'https://buy.stripe.com/6oU8wRckR9IA9kB8ifcAo00',
@@ -34,7 +36,7 @@ const TIERS = [
       'Top placement across all categories',
       'Homepage feature rotation',
       'View and booking analytics',
-      'Priority access to the job board',
+      'Priority placement for job posts',
     ],
     checkoutUrl: 'https://buy.stripe.com/4gMcN70C9bQIfIZfKHcAo01',
   },
@@ -44,11 +46,12 @@ export default function ListYourBusinessPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-16">
       <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight max-w-xl">
-        Get your pop-up in front of the neighborhood.
+        More than a listing. Your spot in the pop-up community.
       </h1>
       <p className="mt-4 text-lg text-[var(--ink-soft)] max-w-xl">
-        Pick a pass. Upgrade or downgrade any time — there's no contract, because pop-ups
-        shouldn't have to sign one either.
+        Get discovered by customers, post shifts to the job board, and team up with other
+        businesses for events — all from one membership. Pick a pass. Upgrade or
+        downgrade any time.
       </p>
 
       <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-10">

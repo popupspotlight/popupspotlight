@@ -13,6 +13,8 @@ export type PopupBusiness = {
   phone: string | null
   status: string
   tier: 'listed' | 'featured' | 'spotlighted'
+  city: string | null
+  state: string | null
 }
 
 export type PopupPhoto = {
