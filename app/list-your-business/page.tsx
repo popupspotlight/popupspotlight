@@ -70,7 +70,7 @@ export default function ListYourBusinessPage() {
         One membership covers all three ways PopupSpotlight helps your business grow.
       </p>
 
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
         {PILLARS.map((p) => (
           <div key={p.title} className="border-2 border-[var(--line)] rounded-xl p-5 bg-white">
             <h2 className="font-display text-base font-semibold">{p.title}</h2>
@@ -79,20 +79,20 @@ export default function ListYourBusinessPage() {
         ))}
       </div>
 
-      <p className="mt-12 text-sm text-[var(--ink-soft)]">
+      <p className="mt-8 text-sm text-[var(--ink-soft)]">
         Pick a pass. Upgrade or downgrade any time — there's no contract.
       </p>
 
       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
         {TIERS.map((tier) => (
-          <div key={tier.name} className="ticket flex flex-col h-full">
-            <div className="p-6" style={{ minHeight: 128 }}>
-              {tier.highlight && (
-                <span className="text-xs font-medium bg-[var(--gold)] text-white px-2.5 py-1 rounded-full">
-                  Most popular
-                </span>
-              )}
-              <h2 className="font-display text-xl font-semibold mt-3">{tier.name}</h2>
+          <div key={tier.name} className="ticket flex flex-col h-full relative">
+            {tier.highlight && (
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-medium bg-[var(--gold)] text-white px-2.5 py-1 rounded-full whitespace-nowrap">
+                Most popular
+              </span>
+            )}
+            <div className="p-6" style={{ height: 104 }}>
+              <h2 className="font-display text-xl font-semibold">{tier.name}</h2>
               <p className="mt-2">
                 <span className="font-display text-3xl font-semibold">{tier.price}</span>
                 <span className="text-[var(--ink-soft)]">{tier.cadence}</span>

@@ -38,7 +38,7 @@ body {
   background: var(--paper);
   border: 2px solid var(--ink);
   border-radius: 50%;
-  top: 128px;
+  top: 104px;
 }
 
 .ticket::before { left: -12px; }
@@ -46,7 +46,7 @@ body {
 
 .ticket-stub {
   border-top: 2px dashed var(--ink);
-  margin-top: 136px;
+  margin-top: 112px;
   padding-top: 20px;
 }
 

@@ -8,7 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export type PopupBusiness = {
   id: string
   name: string
-  category: 'hat_bar' | 'jewelry' | 'food_bev' | 'beauty'
+  category: 'hat_bar' | 'jewelry' | 'food_bev' | 'beauty' | 'kids_parties'
   description: string | null
   phone: string | null
   status: string
