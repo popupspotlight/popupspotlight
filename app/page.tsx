@@ -15,13 +15,7 @@ export default function HomePage() {
       </p>
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-        <div className="relative border-2 border-[var(--ink)] rounded-xl p-6 text-[var(--paper)] flex flex-col overflow-hidden min-h-[280px]">
-          <img
-            src="https://images.unsplash.com/photo-1764512680758-387420ff9245?auto=format&fit=crop&w=1200&q=60"
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover -z-20"
-          />
-          <div className="absolute inset-0 bg-[var(--ink)]/80 -z-10" />
+        <div className="relative border-2 border-[var(--ink)] rounded-xl p-6 text-[var(--paper)] flex flex-col overflow-hidden min-h-[280px]" style={{ background: 'linear-gradient(135deg, #191B23, #3E2E1F)' }}>
           <h2 className="font-display text-xl font-semibold">Post your event</h2>
           <p className="text-sm opacity-90 mt-2 flex-1">
             Not sure who to book? Describe your event and let pop-up businesses come to
@@ -73,25 +67,6 @@ export default function HomePage() {
             </button>
           </form>
           <p className="mt-2 text-xs text-[var(--ink-soft)]">Shows results within 60 miles.</p>
-        </div>
-      </div>
-
-      <div className="mt-14">
-        <p className="text-xs text-[var(--ink-soft)] uppercase tracking-wide mb-3">
-          What's on PopupSpotlight
-        </p>
-        <div className="grid grid-cols-3 gap-3">
-          {categories
-            .filter((cat) => CATEGORY_META[cat].image)
-            .map((cat) => (
-              <div key={cat} className="relative rounded-xl overflow-hidden border-2 border-[var(--ink)] aspect-square">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={CATEGORY_META[cat].image} alt="" className="w-full h-full object-cover" />
-                <span className="absolute bottom-2 left-2 text-xs font-medium px-2 py-1 rounded-full bg-white/90 text-[var(--ink)]">
-                  {CATEGORY_META[cat].label}
-                </span>
-              </div>
-            ))}
         </div>
       </div>
     </main>
