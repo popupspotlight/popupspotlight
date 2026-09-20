@@ -66,20 +66,18 @@ export default function EventDetailPage() {
           People post their events here, and pop-up businesses like yours submit proposals
           directly. List your business to start bidding.
         </p>
-        <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-          <Link
-            href="/list-your-business"
-            className="px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
-          >
-            List your business
+        <Link
+          href="/list-your-business"
+          className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
+        >
+          Bid Events
+        </Link>
+        <p className="mt-3 text-sm text-[var(--ink-soft)]">
+          Already have an account?{' '}
+          <Link href={`/login?role=business&next=/events/${id}`} className="underline">
+            Log in here →
           </Link>
-          <Link
-            href={`/login?role=business&next=/events/${id}`}
-            className="px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
-          >
-            Log in
-          </Link>
-        </div>
+        </p>
       </main>
     )
   }
@@ -98,7 +96,7 @@ export default function EventDetailPage() {
           href="/list-your-business"
           className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
         >
-          List your business
+          Bid Events
         </Link>
       </main>
     )
