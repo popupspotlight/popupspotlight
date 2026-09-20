@@ -6,8 +6,8 @@ export default function HomePage() {
 
   return (
     <main className="max-w-4xl mx-auto px-6 pt-20 pb-24 text-center">
-      <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.05] whitespace-nowrap">
-        Book a pop-up for your next event.
+      <h1 className="font-display text-[clamp(1.5rem,4.2vw,4rem)] font-semibold tracking-tight leading-[1.05] whitespace-nowrap">
+        Book a pop-up for your next event
       </h1>
       <p className="mt-5 text-lg text-[var(--ink-soft)] max-w-lg mx-auto">
         Hat Bars, Jewelry Experiences, Food & Beverage, Mobile Beauty, and Kids Parties &
