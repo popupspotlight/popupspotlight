@@ -20,7 +20,7 @@ export const CATEGORY_META: Record<Category, { label: string; accent: string; bg
     accent: '#C98A1F',
     bg: '#FBEBCE',
     text: '#6E4A0D',
-    image: 'https://images.unsplash.com/photo-1612208176815-e132bcf971b0?auto=format&fit=crop&w=800&q=60',
+    image: 'https://images.unsplash.com/photo-1764512680758-387420ff9245?auto=format&fit=crop&w=800&q=60',
   },
   beauty: { label: 'Mobile Beauty', accent: '#3C7A6A', bg: '#DDEEE8', text: '#1D4A3E' },
   kids_parties: { label: 'Kids Parties & Entertainment', accent: '#3E6FB0', bg: '#DEE9F8', text: '#1E3E66' },

@@ -15,9 +15,15 @@ export default function HomePage() {
       </p>
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-        <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-[var(--ink)] text-[var(--paper)] flex flex-col">
+        <div className="relative border-2 border-[var(--ink)] rounded-xl p-6 text-[var(--paper)] flex flex-col overflow-hidden min-h-[280px]">
+          <img
+            src="https://images.unsplash.com/photo-1764512680758-387420ff9245?auto=format&fit=crop&w=1200&q=60"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover -z-20"
+          />
+          <div className="absolute inset-0 bg-[var(--ink)]/80 -z-10" />
           <h2 className="font-display text-xl font-semibold">Post your event</h2>
-          <p className="text-sm opacity-80 mt-2 flex-1">
+          <p className="text-sm opacity-90 mt-2 flex-1">
             Not sure who to book? Describe your event and let pop-up businesses come to
             you with proposals — capped at 5 bids, so you won't be overwhelmed.
           </p>
@@ -27,12 +33,12 @@ export default function HomePage() {
           >
             Post your event
           </Link>
-          <Link href="/my-events/login" className="text-center mt-3 text-xs opacity-70 hover:underline">
+          <Link href="/my-events/login" className="text-center mt-3 text-xs opacity-80 hover:underline">
             Already posted? Track your event →
           </Link>
         </div>
 
-        <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white flex flex-col">
+        <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white flex flex-col min-h-[280px]">
           <h2 className="font-display text-xl font-semibold">Search the directory</h2>
           <p className="text-sm text-[var(--ink-soft)] mt-2">
             Know what you're looking for? Search by zip code to find and book pop-ups
