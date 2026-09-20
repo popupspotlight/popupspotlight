@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { CATEGORY_META, Category } from '@/lib/categories'
 
 export default function HomePage() {
@@ -9,9 +10,8 @@ export default function HomePage() {
         Book a pop-up for your next event.
       </h1>
       <p className="mt-5 text-lg text-[var(--ink-soft)] max-w-lg mx-auto">
-        Hat bars, jewelry pop-ups, food trucks, and mobile beauty — search by zip code to
-        find and book pop-up businesses for your private or corporate event, anywhere in
-        the country.
+        Hat bars, jewelry pop-ups, food trucks, and mobile beauty — for your private or
+        corporate event, anywhere in the country.
       </p>
 
       <form
@@ -47,6 +47,26 @@ export default function HomePage() {
         </button>
       </form>
       <p className="mt-3 text-xs text-[var(--ink-soft)]">Shows results within 60 miles.</p>
+
+      <div className="mt-12 flex items-center gap-4">
+        <div className="flex-1 h-px bg-[var(--line)]" />
+        <span className="text-sm text-[var(--ink-soft)]">or</span>
+        <div className="flex-1 h-px bg-[var(--line)]" />
+      </div>
+
+      <div className="mt-8 border-2 border-[var(--ink)] rounded-xl p-6 bg-white text-left">
+        <h2 className="font-display text-lg font-semibold">Not sure who to book?</h2>
+        <p className="text-sm text-[var(--ink-soft)] mt-2">
+          Post your event and let pop-up businesses come to you with proposals — capped
+          at 5 bids per event, so you won't be overwhelmed.
+        </p>
+        <Link
+          href="/post-an-event"
+          className="mt-4 inline-block px-5 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
+        >
+          Post your event
+        </Link>
+      </div>
     </main>
   )
 }

@@ -61,6 +61,32 @@ export type WorkerProfile = {
   created_at: string
 }
 
+export type EventRequest = {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  event_type: string | null
+  event_date: string | null
+  zip: string | null
+  city: string | null
+  state: string | null
+  guest_count: number | null
+  budget_range: string | null
+  description: string | null
+  status: 'open' | 'closed'
+  created_at: string
+}
+
+export type EventBid = {
+  id: string
+  event_request_id: string
+  popup_id: string
+  proposal: string
+  price_quote: string | null
+  created_at: string
+}
+
 export type WorkerReview = {
   id: string
   worker_id: string

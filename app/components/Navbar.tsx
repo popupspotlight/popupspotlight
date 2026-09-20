@@ -15,6 +15,9 @@ export default function Navbar() {
           <Link href="/job-board" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
             Job Board
           </Link>
+          <Link href="/events" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
+            Events
+          </Link>
           <AuthNav />
           <Link
             href="/list-your-business"
