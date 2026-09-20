@@ -1,6 +1,6 @@
 const PILLARS = [
   {
-    title: 'The directory',
+    title: 'The Directory',
     description: 'A real profile — photos, reviews, and your story — searchable by zip code across the country.',
   },
   {
@@ -21,9 +21,10 @@ const TIERS = [
     description: 'Get discovered. List your pop-up in the directory at no cost.',
     features: [
       'Public listing with photo, description, and contact info',
-      'Appears in category browsing',
+      'Appear in category browsing',
       'Consumers can call you directly',
     ],
+    buttonLabel: 'Get Listed',
   },
   {
     name: 'Featured',
@@ -33,13 +34,14 @@ const TIERS = [
     features: [
       'Everything in Listed',
       'Photo gallery on your listing',
-      'Featured placement within your category',
+      'Featured Placement on the Directory',
       'Respond publicly to reviews',
       'Post jobs to the Job Board',
       'Find and hire gig talent for shifts',
     ],
     highlight: true,
     checkoutUrl: 'https://buy.stripe.com/6oU8wRckR9IA9kB8ifcAo00',
+    buttonLabel: 'Get Featured',
   },
   {
     name: 'Spotlighted',
@@ -49,14 +51,14 @@ const TIERS = [
     features: [
       'Everything in Featured',
       'Exclusive access to Bid Events — private and corporate event requests',
-      'Reduced fees on every event bid',
-      'Top placement across all categories',
+      'Spotlight placement on the Directory',
       'Homepage feature rotation',
       'Full view and booking analytics',
       'Priority placement for your job posts',
       'Verified Spotlight Partner badge',
     ],
     checkoutUrl: 'https://buy.stripe.com/4gMcN70C9bQIfIZfKHcAo01',
+    buttonLabel: 'Get Spotlighted',
   },
 ]
 
@@ -114,7 +116,7 @@ export default function ListYourBusinessPage() {
                 rel={tier.checkoutUrl ? 'noopener noreferrer' : undefined}
                 className="mt-6 block text-center w-full py-2.5 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
               >
-                {tier.price === 'Free' ? 'Get listed' : 'Get started'}
+                {tier.buttonLabel}
               </a>
             </div>
           </div>

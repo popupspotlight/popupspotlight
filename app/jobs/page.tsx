@@ -34,8 +34,9 @@ export default async function JobsPage() {
         Work the pop-ups.
       </h1>
       <p className="mt-3 text-[var(--ink-soft)] max-w-xl">
-        Shifts at hat bars, jewelry pop-ups, food trucks, and mobile beauty around the
-        country. Apply directly — no account needed to browse.
+        Shifts at hat bars, jewelry experiences, food & beverage pop-ups, mobile beauty,
+        and kids party businesses around the country. Apply directly — no account needed
+        to browse.
       </p>
 
       <div className="mt-10">

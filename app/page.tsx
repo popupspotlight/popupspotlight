@@ -10,8 +10,8 @@ export default function HomePage() {
         Book a pop-up for your next event.
       </h1>
       <p className="mt-5 text-lg text-[var(--ink-soft)] max-w-lg mx-auto">
-        Hat bars, jewelry pop-ups, food trucks, and mobile beauty — for your private or
-        corporate event, anywhere in the country.
+        Hat Bars, Jewelry Experiences, Food & Beverage, Mobile Beauty, and Kids Parties &
+        Entertainment — for your private or corporate event, anywhere in the country.
       </p>
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
