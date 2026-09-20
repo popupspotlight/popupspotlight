@@ -69,6 +69,25 @@ export default function HomePage() {
           <p className="mt-2 text-xs text-[var(--ink-soft)]">Shows results within 60 miles.</p>
         </div>
       </div>
+
+      <div className="mt-14">
+        <p className="text-xs text-[var(--ink-soft)] uppercase tracking-wide mb-3">
+          What's on PopupSpotlight
+        </p>
+        <div className="grid grid-cols-3 gap-3">
+          {categories
+            .filter((cat) => CATEGORY_META[cat].image)
+            .map((cat) => (
+              <div key={cat} className="relative rounded-xl overflow-hidden border-2 border-[var(--ink)] aspect-square">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={CATEGORY_META[cat].image} alt="" className="w-full h-full object-cover" />
+                <span className="absolute bottom-2 left-2 text-xs font-medium px-2 py-1 rounded-full bg-white/90 text-[var(--ink)]">
+                  {CATEGORY_META[cat].label}
+                </span>
+              </div>
+            ))}
+        </div>
+      </div>
     </main>
   )
 }

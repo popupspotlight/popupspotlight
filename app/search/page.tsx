@@ -207,7 +207,15 @@ export default async function SearchPage({
                 key={b.id}
                 className="border-2 border-[var(--ink)] rounded-xl overflow-hidden bg-white flex flex-col hover:-translate-y-0.5 transition-transform"
               >
-                <div className="h-2" style={{ background: meta?.accent ?? 'var(--ink)' }} />
+                {meta?.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={meta.image} alt="" className="h-32 w-full object-cover" />
+                ) : (
+                  <div
+                    className="h-32 w-full"
+                    style={{ background: `linear-gradient(135deg, ${meta?.accent ?? 'var(--ink)'}, ${meta?.bg ?? 'var(--line)'})` }}
+                  />
+                )}
                 <div className="p-5 flex-1 flex flex-col">
                   <div className="flex items-center justify-between">
                     <span

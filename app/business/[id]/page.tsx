@@ -46,6 +46,14 @@ export default async function BusinessProfilePage({ params }: { params: { id: st
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
+      {!(canShowPhotos && photoList.length > 0) && meta?.image && (
+        <img
+          src={meta.image}
+          alt=""
+          className="w-full h-56 sm:h-72 object-cover rounded-xl border-2 border-[var(--ink)] mb-6"
+        />
+      )}
+
       <span
         className="text-xs font-medium px-2.5 py-1 rounded-full"
         style={{ background: meta?.bg, color: meta?.text }}

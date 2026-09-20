@@ -107,7 +107,7 @@ export default function LoginForm() {
 
       {role === 'business' ? (
         <p className="text-sm text-[var(--ink-soft)] mt-4">
-          No account yet? <Link href="/list-your-business" className="underline">List your business</Link>
+          No account yet? <Link href="/list-your-business" className="underline">Claim your spot</Link>
         </p>
       ) : (
         <p className="text-sm text-[var(--ink-soft)] mt-4">

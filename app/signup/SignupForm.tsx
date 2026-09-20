@@ -107,7 +107,7 @@ export default function SignupForm() {
       ) : (
         <p className="text-xs text-[var(--ink-soft)] mt-2">
           Own a pop-up business?{' '}
-          <Link href="/list-your-business" className="underline">List your business</Link>
+          <Link href="/list-your-business" className="underline">Claim your spot</Link>
         </p>
       )}
     </main>

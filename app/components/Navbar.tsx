@@ -23,7 +23,7 @@ export default function Navbar() {
             href="/list-your-business"
             className="text-sm font-medium bg-[var(--ink)] text-[var(--paper)] px-4 py-2 rounded-full hover:opacity-90"
           >
-            List your business
+            Claim Your Spot
           </Link>
         </nav>
       </div>
