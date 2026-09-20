@@ -29,24 +29,24 @@ body {
   border-radius: 10px;
 }
 
-.ticket::before,
-.ticket::after {
+.ticket-stub {
+  position: relative;
+  border-top: 2px solid var(--ink);
+  padding-top: 20px;
+}
+
+.ticket-stub::before,
+.ticket-stub::after {
   content: '';
   position: absolute;
+  top: -10px;
   width: 20px;
   height: 20px;
   background: var(--paper);
   border: 2px solid var(--ink);
   border-radius: 50%;
-  top: 104px;
 }
 
-.ticket::before { left: -12px; }
-.ticket::after { right: -12px; }
-
-.ticket-stub {
-  border-top: 2px dashed var(--ink);
-  margin-top: 112px;
-  padding-top: 20px;
-}
+.ticket-stub::before { left: -12px; }
+.ticket-stub::after { right: -12px; }
 

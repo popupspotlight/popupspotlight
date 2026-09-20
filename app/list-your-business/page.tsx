@@ -93,7 +93,7 @@ export default function ListYourBusinessPage() {
                 Most popular
               </span>
             )}
-            <div className="p-6" style={{ height: 104 }}>
+            <div className="p-6 pb-5">
               <h2 className="font-display text-xl font-semibold">{tier.name}</h2>
               <p className="mt-2">
                 <span className="font-display text-3xl font-semibold">{tier.price}</span>
