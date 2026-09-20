@@ -8,6 +8,7 @@ type Access = 'checking' | 'guest' | 'granted'
 
 export default function JobBoardPage() {
   const [access, setAccess] = useState<Access>('checking')
+  const [isSpotlighted, setIsSpotlighted] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -17,13 +18,14 @@ export default function JobBoardPage() {
       }
       const { data: paidBusiness } = await supabase
         .from('popup_businesses')
-        .select('id')
+        .select('id, tier')
         .eq('owner_id', data.session.user.id)
         .in('tier', ['featured', 'spotlighted'])
         .eq('status', 'active')
         .limit(1)
         .maybeSingle()
 
+      setIsSpotlighted(paidBusiness?.tier === 'spotlighted')
       setAccess(paidBusiness ? 'granted' : 'guest')
     })
   }, [])
@@ -35,8 +37,8 @@ export default function JobBoardPage() {
       <main className="max-w-2xl mx-auto px-6 py-16">
         <h1 className="font-display text-4xl font-semibold tracking-tight">Job Board</h1>
         <p className="mt-3 text-[var(--ink-soft)]">
-          Post a shift, browse who's applied, and check the events board for
-          collaboration opportunities.
+          Post a shift, browse who's applied, and check Bid Events for collaboration
+          opportunities.
         </p>
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Link href="/post-a-job" className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white hover:-translate-y-0.5 transition-transform">
@@ -47,10 +49,17 @@ export default function JobBoardPage() {
             <h2 className="font-display text-lg font-semibold">Browse open shifts</h2>
             <p className="text-sm text-[var(--ink-soft)] mt-2">See what's posted across the platform.</p>
           </Link>
-          <Link href="/events" className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white hover:-translate-y-0.5 transition-transform sm:col-span-2">
-            <h2 className="font-display text-lg font-semibold">Bid on events</h2>
-            <p className="text-sm text-[var(--ink-soft)] mt-2">Collaborate with other businesses by bidding on posted events.</p>
-          </Link>
+          {isSpotlighted ? (
+            <Link href="/events" className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white hover:-translate-y-0.5 transition-transform sm:col-span-2">
+              <h2 className="font-display text-lg font-semibold">Bid on events</h2>
+              <p className="text-sm text-[var(--ink-soft)] mt-2">Collaborate with other businesses by bidding on posted events.</p>
+            </Link>
+          ) : (
+            <Link href="/list-your-business" className="border-2 border-dashed border-[var(--line)] rounded-xl p-6 bg-white hover:-translate-y-0.5 transition-transform sm:col-span-2">
+              <h2 className="font-display text-lg font-semibold">Bid on events 🔒</h2>
+              <p className="text-sm text-[var(--ink-soft)] mt-2">Exclusive to Spotlighted. Upgrade to unlock the events marketplace.</p>
+            </Link>
+          )}
         </div>
       </main>
     )

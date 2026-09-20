@@ -1,3 +1,18 @@
+const PILLARS = [
+  {
+    title: 'The directory',
+    description: 'A real profile — photos, reviews, and your story — searchable by zip code across the country.',
+  },
+  {
+    title: 'The Job Board',
+    description: 'Post shifts, find gig talent, no algorithm managing who you hire. You see every applicant and choose.',
+  },
+  {
+    title: 'Bid Events',
+    description: 'Private and corporate event requests posted directly by customers. Submit a proposal, win the booking.',
+  },
+]
+
 const TIERS = [
   {
     name: 'Listed',
@@ -14,14 +29,14 @@ const TIERS = [
     name: 'Featured',
     price: '$79',
     cadence: '/month',
-    description: 'Stand out in your category and start building repeat visitors.',
+    description: 'A professional presence, plus a real way to find gig talent when you need it.',
     features: [
       'Everything in Listed',
       'Photo gallery on your listing',
       'Featured placement within your category',
       'Respond publicly to reviews',
-      'Post jobs to the job board',
-      'Collaborate with other businesses on events',
+      'Post jobs to the Job Board',
+      'Find and hire gig talent for shifts',
     ],
     highlight: true,
     checkoutUrl: 'https://buy.stripe.com/6oU8wRckR9IA9kB8ifcAo00',
@@ -30,13 +45,16 @@ const TIERS = [
     name: 'Spotlighted',
     price: '$199',
     cadence: '/month',
-    description: 'Top billing across the whole platform, plus the data to prove it.',
+    description: 'Everything in Featured, plus the growth engine: exclusive access to Bid Events.',
     features: [
       'Everything in Featured',
+      'Exclusive access to Bid Events — private and corporate event requests',
+      'Reduced fees on every event bid',
       'Top placement across all categories',
       'Homepage feature rotation',
-      'View and booking analytics',
-      'Priority placement for job posts',
+      'Full view and booking analytics',
+      'Priority placement for your job posts',
+      'Verified Spotlight Partner badge',
     ],
     checkoutUrl: 'https://buy.stripe.com/4gMcN70C9bQIfIZfKHcAo01',
   },
@@ -45,19 +63,30 @@ const TIERS = [
 export default function ListYourBusinessPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-16">
-      <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight max-w-xl">
-        More than a listing. Your spot in the pop-up community.
+      <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight max-w-2xl">
+        More than a listing. Your spot in the pop-up economy.
       </h1>
       <p className="mt-4 text-lg text-[var(--ink-soft)] max-w-xl">
-        Get discovered by customers, post shifts to the job board, and team up with other
-        businesses for events — all from one membership. Pick a pass. Upgrade or
-        downgrade any time.
+        One membership covers all three ways PopupSpotlight helps your business grow.
       </p>
 
-      <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {PILLARS.map((p) => (
+          <div key={p.title} className="border-2 border-[var(--line)] rounded-xl p-5 bg-white">
+            <h2 className="font-display text-base font-semibold">{p.title}</h2>
+            <p className="text-sm text-[var(--ink-soft)] mt-2">{p.description}</p>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-12 text-sm text-[var(--ink-soft)]">
+        Pick a pass. Upgrade or downgrade any time — there's no contract.
+      </p>
+
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
         {TIERS.map((tier) => (
-          <div key={tier.name} className="ticket flex flex-col">
-            <div className="p-6" style={{ minHeight: 168 }}>
+          <div key={tier.name} className="ticket flex flex-col h-full">
+            <div className="p-6" style={{ minHeight: 128 }}>
               {tier.highlight && (
                 <span className="text-xs font-medium bg-[var(--gold)] text-white px-2.5 py-1 rounded-full">
                   Most popular
@@ -74,7 +103,7 @@ export default function ListYourBusinessPage() {
               <ul className="space-y-2.5 text-sm flex-1">
                 {tier.features.map((f) => (
                   <li key={f} className="flex gap-2">
-                    <span aria-hidden="true">—</span>
+                    <span aria-hidden="true" className="text-[var(--ink-soft)]">—</span>
                     <span>{f}</span>
                   </li>
                 ))}

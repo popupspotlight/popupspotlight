@@ -24,7 +24,7 @@ export default function EventsPage() {
         .from('popup_businesses')
         .select('id')
         .eq('owner_id', data.session.user.id)
-        .in('tier', ['featured', 'spotlighted'])
+        .eq('tier', 'spotlighted')
         .eq('status', 'active')
         .limit(1)
         .maybeSingle()
@@ -89,7 +89,7 @@ export default function EventsPage() {
           Want to bid on more events in your area?
         </h1>
         <p className="mt-4 text-lg text-[var(--ink-soft)]">
-          Bidding on events is available on Featured and Spotlighted plans — upgrade
+          Bidding on events is exclusive to the Spotlighted plan — upgrade
           your listing to start submitting proposals.
         </p>
         <Link
