@@ -31,7 +31,7 @@ export default function AuthNav() {
   }
 
   return (
-    <Link href="/login?role=business" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
+    <Link href="/login" className="text-sm text-[var(--ink-soft)] hover:text-[var(--ink)]">
       Log in
     </Link>
   )

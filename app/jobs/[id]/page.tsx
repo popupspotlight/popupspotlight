@@ -33,7 +33,7 @@ export default async function JobDetailPage({ params }: { params: { id: string }
       <div className="flex gap-4 mt-3 text-sm text-[var(--ink-soft)]">
         {j.pay_rate && <span className="font-medium text-[var(--ink)]">{j.pay_rate}</span>}
         {formatShift(j.shift_start, j.shift_end) && <span>{formatShift(j.shift_start, j.shift_end)}</span>}
-        <span>{j.workers_needed} {j.workers_needed === 1 ? 'worker' : 'workers'} needed</span>
+        <span>{j.workers_needed} {j.workers_needed === 1 ? 'person' : 'people'} needed</span>
       </div>
 
       {j.description && (

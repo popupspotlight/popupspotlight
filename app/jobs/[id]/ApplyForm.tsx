@@ -76,13 +76,13 @@ export default function ApplyForm({ jobPostId }: { jobPostId: string }) {
     return (
       <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white">
         <p className="text-sm text-[var(--ink-soft)] mb-3">
-          Create a worker profile first — it only takes a minute.
+          Create a talent profile first — it only takes a minute.
         </p>
         <Link
           href="/workers/new"
           className="inline-block px-5 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
         >
-          Create worker profile
+          Create talent profile
         </Link>
       </div>
     )

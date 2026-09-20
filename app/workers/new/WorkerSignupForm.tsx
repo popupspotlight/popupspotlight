@@ -49,7 +49,7 @@ export default function WorkerSignupForm() {
 
     setLoading(false)
     if (error) {
-      setError(error.message.includes('duplicate') ? 'You already have a worker profile.' : error.message)
+      setError(error.message.includes('duplicate') ? 'You already have a talent profile.' : error.message)
       return
     }
     setSuccess(true)

@@ -13,8 +13,8 @@ const COPY = {
   },
   worker: {
     title: 'Sign up to find work.',
-    subtitle: 'Create a free profile and apply to pop-up shifts near you.',
-    afterConfirm: "Click the link, then come back and log in — you'll be able to create your worker profile right away.",
+    subtitle: 'Create a free talent profile and apply to pop-up shifts near you.',
+    afterConfirm: "Click the link, then come back and log in — you'll be able to create your talent profile right away.",
   },
 }
 
@@ -102,12 +102,12 @@ export default function SignupForm() {
       {role === 'business' ? (
         <p className="text-xs text-[var(--ink-soft)] mt-2">
           Looking for pop-up work instead?{' '}
-          <Link href="/signup?role=worker" className="underline">Sign up as a worker</Link>
+          <Link href="/signup?role=worker" className="underline">Sign up as talent</Link>
         </p>
       ) : (
         <p className="text-xs text-[var(--ink-soft)] mt-2">
           Own a pop-up business?{' '}
-          <Link href="/signup?role=business" className="underline">Sign up as a business</Link>
+          <Link href="/list-your-business" className="underline">List your business</Link>
         </p>
       )}
     </main>

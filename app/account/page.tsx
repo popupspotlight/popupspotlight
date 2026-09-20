@@ -45,7 +45,7 @@ export default function AccountPage() {
       <p className="text-[var(--ink-soft)] mt-2">{session?.user.email}</p>
 
       <div className="mt-10 border-2 border-[var(--ink)] rounded-xl p-6 bg-white">
-        <h2 className="font-display text-lg font-semibold">Worker profile</h2>
+        <h2 className="font-display text-lg font-semibold">Talent profile</h2>
         {worker ? (
           <>
             <p className="text-sm text-[var(--ink-soft)] mt-2">
@@ -58,14 +58,14 @@ export default function AccountPage() {
         ) : (
           <>
             <p className="text-sm text-[var(--ink-soft)] mt-2">
-              No worker profile yet — create one to apply to jobs, even if you also own a
+              No talent profile yet — create one to apply to jobs, even if you also own a
               business.
             </p>
             <Link
               href="/workers/new"
               className="mt-4 inline-block px-5 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
             >
-              Create worker profile
+              Create talent profile
             </Link>
           </>
         )}

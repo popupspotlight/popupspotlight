@@ -70,7 +70,7 @@ export default async function JobsPage() {
                       <span>{formatShift(job.shift_start, job.shift_end)}</span>
                     )}
                     <span>
-                      {job.workers_needed} {job.workers_needed === 1 ? 'worker' : 'workers'} needed
+                      {job.workers_needed} {job.workers_needed === 1 ? 'person' : 'people'} needed
                     </span>
                   </div>
                 </Link>

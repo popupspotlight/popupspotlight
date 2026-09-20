@@ -2,17 +2,17 @@ const POST_TIERS = [
   {
     name: 'Single shift',
     price: '$15',
-    description: 'One worker, up to 3 days. Good for a single weekend pop-up.',
+    description: 'One person, up to 3 days. Good for a single weekend pop-up.',
   },
   {
     name: 'Full run',
     price: '$35',
-    description: 'Up to 3 workers, up to 14 days. Good for a multi-week residency.',
+    description: 'Up to 3 people, up to 14 days. Good for a multi-week residency.',
   },
   {
     name: 'Team build',
     price: '$60',
-    description: 'Unlimited workers, up to 30 days. Good for launching a new location.',
+    description: 'Unlimited people, up to 30 days. Good for launching a new location.',
   },
 ]
 
@@ -23,7 +23,7 @@ export default function PostAJobPage() {
         Find your crew.
       </h1>
       <p className="mt-4 text-lg text-[var(--ink-soft)] max-w-xl">
-        Post a shift, workers apply directly, you pick who to hire. PopupSpotlight isn't
+        Post a shift, talent applies directly, you pick who to hire. PopupSpotlight isn't
         the employer — you handle hiring, pay, and paperwork directly with whoever you
         bring on.
       </p>
@@ -46,7 +46,7 @@ export default function PostAJobPage() {
       </a>
       <p className="text-xs text-[var(--ink-soft)] mt-3">
         Job posting is manual for now while we build self-serve posting. Send us the role,
-        pay, dates, and worker count — we'll get it live within a day.
+        pay, dates, and how many people you need — we'll get it live within a day.
       </p>
     </main>
   )

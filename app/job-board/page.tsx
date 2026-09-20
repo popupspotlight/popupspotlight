@@ -41,7 +41,7 @@ export default function JobBoardPage() {
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Link href="/post-a-job" className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white hover:-translate-y-0.5 transition-transform">
             <h2 className="font-display text-lg font-semibold">Post a job</h2>
-            <p className="text-sm text-[var(--ink-soft)] mt-2">Find gig workers for your next pop-up.</p>
+            <p className="text-sm text-[var(--ink-soft)] mt-2">Find gig talent for your next pop-up.</p>
           </Link>
           <Link href="/jobs" className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white hover:-translate-y-0.5 transition-transform">
             <h2 className="font-display text-lg font-semibold">Browse open shifts</h2>
@@ -59,10 +59,10 @@ export default function JobBoardPage() {
   return (
     <main className="max-w-2xl mx-auto px-6 py-16 text-center">
       <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
-        Having trouble finding workers for your pop-up?
+        Having trouble finding people for your pop-up?
       </h1>
       <p className="mt-4 text-lg text-[var(--ink-soft)]">
-        List your business to post jobs, find gig workers, and collaborate with other
+        List your business to post jobs, find gig talent, and collaborate with other
         pop-up businesses on events.
       </p>
       <Link
@@ -77,7 +77,7 @@ export default function JobBoardPage() {
           Looking for pop-up work instead?
         </p>
         <Link href="/signup?role=worker" className="text-sm underline mt-1 inline-block">
-          Create your free worker profile →
+          Create your free talent profile →
         </Link>
       </div>
     </main>
