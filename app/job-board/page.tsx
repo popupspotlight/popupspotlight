@@ -59,7 +59,7 @@ export default function JobBoardPage() {
   return (
     <main className="max-w-2xl mx-auto px-6 py-16 text-center">
       <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
-        Having trouble finding people for your pop-up?
+        Having trouble finding talent for your pop-up?
       </h1>
       <p className="mt-4 text-lg text-[var(--ink-soft)]">
         List your business to post jobs, find gig talent, and collaborate with other

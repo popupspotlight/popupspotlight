@@ -63,7 +63,7 @@ export default function EventDetailPage() {
           Want to bid on more events in your area?
         </h1>
         <p className="mt-4 text-lg text-[var(--ink-soft)]">
-          Businesses post their events here, and pop-ups like yours submit proposals
+          People post their events here, and pop-up businesses like yours submit proposals
           directly. List your business to start bidding.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
