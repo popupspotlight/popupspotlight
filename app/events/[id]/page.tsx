@@ -74,7 +74,7 @@ export default function EventDetailPage() {
             List your business
           </Link>
           <Link
-            href={`/login?next=/events/${id}`}
+            href={`/login?role=business&next=/events/${id}`}
             className="px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
           >
             Log in

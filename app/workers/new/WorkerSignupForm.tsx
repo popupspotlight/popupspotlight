@@ -20,7 +20,7 @@ export default function WorkerSignupForm() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) {
-        router.push('/login?next=/workers/new')
+        router.push('/login?role=worker&next=/workers/new')
         return
       }
       setUserId(data.session.user.id)

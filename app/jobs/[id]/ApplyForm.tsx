@@ -63,7 +63,7 @@ export default function ApplyForm({ jobPostId }: { jobPostId: string }) {
       <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white">
         <p className="text-sm text-[var(--ink-soft)] mb-3">Log in to apply to this job.</p>
         <Link
-          href={`/login?next=/jobs/${jobPostId}`}
+          href={`/login?role=worker&next=/jobs/${jobPostId}`}
           className="inline-block px-5 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
         >
           Log in

@@ -2,47 +2,64 @@
 
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-const TITLES: Record<string, string> = {
-  business: 'Log in as a business.',
-  worker: 'Log in as a worker.',
+const COPY = {
+  business: {
+    title: 'Sign up as a business.',
+    subtitle: 'List your pop-up, post jobs, and bid on events.',
+    afterConfirm: 'Click the link, then come back and log in. Email us to get your business listed.',
+  },
+  worker: {
+    title: 'Sign up to find work.',
+    subtitle: 'Create a free profile and apply to pop-up shifts near you.',
+    afterConfirm: "Click the link, then come back and log in — you'll be able to create your worker profile right away.",
+  },
 }
 
-export default function LoginForm() {
-  const router = useRouter()
+export default function SignupForm() {
   const searchParams = useSearchParams()
   const role = searchParams.get('role') === 'worker' ? 'worker' : 'business'
-  const next = searchParams.get('next') || '/account'
+  const copy = COPY[role]
+  const next = role === 'worker' ? '/workers/new' : '/account'
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [sent, setSent] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signUp({ email, password })
 
     setLoading(false)
     if (error) {
       setError(error.message)
       return
     }
-    router.push(next)
-    router.refresh()
+    setSent(true)
+  }
+
+  if (sent) {
+    return (
+      <main className="max-w-md mx-auto px-6 py-20 text-center">
+        <h1 className="font-display text-2xl font-semibold">Check your email.</h1>
+        <p className="text-[var(--ink-soft)] mt-3">
+          We sent a confirmation link to <strong>{email}</strong>. {copy.afterConfirm}
+        </p>
+      </main>
+    )
   }
 
   return (
     <main className="max-w-md mx-auto px-6 py-20">
-      <h1 className="font-display text-3xl font-semibold tracking-tight">{TITLES[role]}</h1>
-      <p className="mt-2 text-sm text-[var(--ink-soft)]">
-        Posting an event instead?{' '}
-        <Link href="/my-events/login" className="underline">Track your event here</Link>
-      </p>
+      <h1 className="font-display text-3xl font-semibold tracking-tight">{copy.title}</h1>
+      <p className="mt-2 text-[var(--ink-soft)]">{copy.subtitle}</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-3">
         <div>
@@ -60,6 +77,7 @@ export default function LoginForm() {
           <input
             type="password"
             required
+            minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1"
@@ -71,20 +89,25 @@ export default function LoginForm() {
           disabled={loading}
           className="w-full py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90 disabled:opacity-50"
         >
-          {loading ? 'Logging in…' : 'Log in'}
+          {loading ? 'Creating account…' : 'Sign up'}
         </button>
       </form>
 
       <p className="text-sm text-[var(--ink-soft)] mt-4">
-        No account yet? <Link href={`/signup?role=${role}`} className="underline">Sign up</Link>
+        Already have an account?{' '}
+        <Link href={`/login?role=${role}${next !== '/account' ? `&next=${next}` : ''}`} className="underline">
+          Log in
+        </Link>
       </p>
       {role === 'business' ? (
         <p className="text-xs text-[var(--ink-soft)] mt-2">
-          <Link href="/login?role=worker" className="underline">Log in as a worker instead</Link>
+          Looking for pop-up work instead?{' '}
+          <Link href="/signup?role=worker" className="underline">Sign up as a worker</Link>
         </p>
       ) : (
         <p className="text-xs text-[var(--ink-soft)] mt-2">
-          <Link href="/login?role=business" className="underline">Log in as a business instead</Link>
+          Own a pop-up business?{' '}
+          <Link href="/signup?role=business" className="underline">Sign up as a business</Link>
         </p>
       )}
     </main>

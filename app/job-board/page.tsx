@@ -76,7 +76,7 @@ export default function JobBoardPage() {
         <p className="text-sm text-[var(--ink-soft)]">
           Looking for pop-up work instead?
         </p>
-        <Link href="/workers/new" className="text-sm underline mt-1 inline-block">
+        <Link href="/signup?role=worker" className="text-sm underline mt-1 inline-block">
           Create your free worker profile →
         </Link>
       </div>
