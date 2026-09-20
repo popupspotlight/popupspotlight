@@ -65,12 +65,20 @@ export default function JobBoardPage() {
         List your business to post jobs, find gig talent, and collaborate with other
         pop-up businesses on events.
       </p>
-      <Link
-        href="/list-your-business"
-        className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
-      >
-        List your business
-      </Link>
+      <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <Link
+          href="/list-your-business"
+          className="px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
+        >
+          Find Talent
+        </Link>
+        <Link
+          href="/login?role=business&next=/job-board"
+          className="px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
+        >
+          Already have an account? Log in here
+        </Link>
+      </div>
 
       <div className="mt-14 pt-10 border-t border-[var(--line)]">
         <p className="text-sm text-[var(--ink-soft)]">
