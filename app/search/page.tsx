@@ -174,8 +174,8 @@ export default async function SearchPage({
           {[
             { key: 'suggested', label: 'Suggested' },
             ...(origin ? [{ key: 'closest', label: 'Closest' }] : []),
-            { key: 'top_rated', label: 'Top rated' },
-            { key: 'most_reviewed', label: 'Most reviews' },
+            { key: 'top_rated', label: 'Top Rated' },
+            { key: 'most_reviewed', label: 'Most Reviewed' },
           ].map((opt) => (
             <Link
               key={opt.key}

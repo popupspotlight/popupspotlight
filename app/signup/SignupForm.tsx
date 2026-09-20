@@ -13,7 +13,7 @@ const COPY = {
   },
   worker: {
     title: 'Sign up to find work.',
-    subtitle: 'Create a free talent profile and apply to pop-up shifts near you.',
+    subtitle: 'Create a FREE talent profile and apply to pop-up shifts near you.',
     afterConfirm: "Click the link, then come back and log in — you'll be able to create your talent profile right away.",
   },
 }
