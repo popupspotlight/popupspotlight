@@ -91,7 +91,11 @@ export default async function SearchPage({
   const rest = businesses.filter((b) => !spotlightedIds.has(b.id))
 
   let sorted: (PopupBusiness & { distance?: number })[]
-  if (sort === 'top_rated') {
+  if (sort === 'closest' && origin) {
+    // Pure distance sort — no Spotlighted priority here, since "closest"
+    // should mean exactly that.
+    sorted = [...businesses].sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
+  } else if (sort === 'top_rated') {
     sorted = [...businesses].sort(
       (a, b) => (reviewStats[b.id]?.avg ?? 0) - (reviewStats[a.id]?.avg ?? 0)
     )
@@ -169,6 +173,7 @@ export default async function SearchPage({
         <div className="flex gap-2">
           {[
             { key: 'suggested', label: 'Suggested' },
+            ...(origin ? [{ key: 'closest', label: 'Closest' }] : []),
             { key: 'top_rated', label: 'Top rated' },
             { key: 'most_reviewed', label: 'Most reviews' },
           ].map((opt) => (

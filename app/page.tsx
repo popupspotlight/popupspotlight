@@ -6,11 +6,12 @@ export default function HomePage() {
   return (
     <main className="max-w-2xl mx-auto px-6 pt-24 pb-32 text-center">
       <h1 className="font-display text-5xl sm:text-6xl font-semibold tracking-tight leading-[1.05]">
-        Find what's popping up near you.
+        Book a pop-up for your next event.
       </h1>
       <p className="mt-5 text-lg text-[var(--ink-soft)] max-w-lg mx-auto">
         Hat bars, jewelry pop-ups, food trucks, and mobile beauty — search by zip code to
-        see what's within an hour of you, anywhere in the country.
+        find and book pop-up businesses for your private or corporate event, anywhere in
+        the country.
       </p>
 
       <form

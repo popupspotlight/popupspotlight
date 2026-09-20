@@ -75,6 +75,30 @@ export default async function BusinessProfilePage({ params }: { params: { id: st
         <p className="mt-4 font-medium">{formatPhone(biz.phone)}</p>
       )}
 
+      <div className="mt-6 flex flex-col sm:flex-row gap-3">
+        <a
+          href={`mailto:popupspotlightinfo@gmail.com?subject=${encodeURIComponent(
+            `Booking request: ${biz.name}`
+          )}&body=${encodeURIComponent(
+            'Tell us about your event: date, location, guest count, and what you have in mind.'
+          )}`}
+          className="text-center px-6 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
+        >
+          Request to book
+        </a>
+        {biz.phone && (
+          <a
+            href={`tel:${biz.phone}`}
+            className="text-center px-6 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
+          >
+            Call to book
+          </a>
+        )}
+      </div>
+      <p className="text-xs text-[var(--ink-soft)] mt-2">
+        Booking requests are handled directly for now while we build online booking.
+      </p>
+
       {canShowPhotos && photoList.length > 0 && (
         <div className="mt-10">
           <h2 className="font-display text-lg font-semibold mb-3">Photos</h2>
