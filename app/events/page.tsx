@@ -68,7 +68,7 @@ export default function EventsPage() {
         </p>
         <Link
           href="/list-your-business"
-          className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
+          className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90"
         >
           Bid Events
         </Link>
@@ -94,7 +94,7 @@ export default function EventsPage() {
         </p>
         <Link
           href="/list-your-business"
-          className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
+          className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90"
         >
           Bid Events
         </Link>

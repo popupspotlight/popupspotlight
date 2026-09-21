@@ -23,7 +23,7 @@ export default function Navbar() {
           <AuthNav />
           <Link
             href="/list-your-business"
-            className="text-sm font-medium bg-[var(--ink)] text-[var(--paper)] px-4 py-2 rounded-full hover:opacity-90"
+            className="text-sm font-medium bg-[var(--gold)] text-[var(--ink)] px-4 py-2 rounded-full hover:opacity-90 border-2 border-[var(--ink)]"
           >
             Claim Your Spot
           </Link>

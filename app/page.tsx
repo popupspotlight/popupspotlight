@@ -15,7 +15,7 @@ export default function HomePage() {
       </p>
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-        <div className="relative border-2 border-[var(--ink)] rounded-xl p-6 text-[var(--paper)] flex flex-col overflow-hidden min-h-[280px]" style={{ background: 'linear-gradient(135deg, #191B23, #3E2E1F)' }}>
+        <div className="relative border-2 border-[var(--ink)] rounded-xl p-6 text-[var(--ink)] flex flex-col overflow-hidden min-h-[280px]" style={{ background: 'linear-gradient(135deg, #E3B94A, #C99A2E)' }}>
           <h2 className="font-display text-xl font-semibold">Post your event</h2>
           <p className="text-sm opacity-90 mt-2 flex-1">
             Not sure who to book? Describe your event and let pop-up businesses come to
@@ -23,7 +23,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/post-an-event"
-            className="mt-5 text-center px-5 py-2.5 rounded-full font-medium bg-[var(--paper)] text-[var(--ink)] hover:opacity-90"
+            className="mt-5 text-center px-5 py-2.5 rounded-full font-medium bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
           >
             Post your event
           </Link>
