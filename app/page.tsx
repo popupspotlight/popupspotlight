@@ -6,7 +6,7 @@ export default function HomePage() {
 
   return (
     <main className="max-w-4xl mx-auto px-6 pt-20 pb-24 text-center">
-      <h1 className="font-display text-[clamp(1.5rem,4.2vw,4rem)] font-semibold tracking-tight leading-[1.05] whitespace-nowrap">
+      <h1 className="font-display text-[clamp(1.1rem,4.2vw,4rem)] font-semibold tracking-tight leading-[1.05] whitespace-nowrap">
         Book a pop-up for your next event
       </h1>
       <p className="mt-5 text-lg text-[var(--ink-soft)] max-w-lg mx-auto">
@@ -15,7 +15,7 @@ export default function HomePage() {
       </p>
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-        <div className="relative border-2 border-[var(--ink)] rounded-xl p-6 text-[var(--ink)] flex flex-col overflow-hidden min-h-[280px]" style={{ background: 'linear-gradient(135deg, #E3B94A, #C99A2E)' }}>
+        <div className="relative border-2 border-[var(--ink)] rounded-xl p-6 text-[var(--ink)] flex flex-col overflow-hidden min-h-[280px]" style={{ background: 'linear-gradient(135deg, #FFC94D, #F2941C)' }}>
           <h2 className="font-display text-xl font-semibold">Post your event</h2>
           <p className="text-sm opacity-90 mt-2 flex-1">
             Not sure who to book? Describe your event and let pop-up businesses come to
