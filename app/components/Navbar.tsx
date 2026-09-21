@@ -16,9 +16,10 @@ export default function Navbar() {
   return (
     <header className="border-b-2 border-[var(--ink)] relative">
       <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center" onClick={() => setOpen(false)}>
+        <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="PopupSpotlight" className="h-10 w-auto" />
+          <img src="/logo-icon.png" alt="" className="h-12 w-auto" />
+          <span className="font-display text-xl font-semibold tracking-tight">PopupSpotlight</span>
         </Link>
 
         {/* Desktop nav */}
