@@ -7,17 +7,14 @@ function CategoryIcon({ category, color }: { category: Category; color: string }
     case 'hat_bar':
       return (
         <svg {...common}>
-          <path d="M1 21 C1 17 8 15.5 16 16.5 C24 15.5 31 17 31 21 C31 24.5 24 22 16 23 C8 22 1 24.5 1 21 Z" />
-          <path d="M0.5 19.5 Q -1 14 3 15.5 Q 3.5 18.5 2 20.5 Z" />
-          <path d="M31.5 19.5 Q 33 14 29 15.5 Q 28.5 18.5 30 20.5 Z" />
-          <path d="M9.5 17.5 Q9 5 16 5 Q23 5 22.5 17.5 Q16 19.5 9.5 17.5 Z" />
-          <path d="M16 6.5 Q14.8 11 16 15" stroke="#000" strokeOpacity="0.2" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+          <ellipse cx="16" cy="22" rx="15" ry="4" />
+          <path d="M9 22 Q9 11 13 8 Q16 10 19 8 Q23 11 23 22 Z" />
         </svg>
       )
     case 'jewelry':
       return (
         <svg {...common}>
-          <path d="M16 3 L28 13 L16 29 L4 13 Z" />
+          <path d="M8 8 L24 8 L28 13 L16 29 L4 13 Z" />
         </svg>
       )
     case 'food_bev':

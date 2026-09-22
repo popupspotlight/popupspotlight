@@ -165,12 +165,12 @@ export default async function SearchPage({
         </p>
       )}
 
-      <div className="flex items-center justify-between mt-8 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-8 mb-6">
         <span className="text-sm text-[var(--ink-soft)]">
           {sorted.length} {sorted.length === 1 ? 'listing' : 'listings'}
           {origin ? ` within ${RADIUS_MILES} miles of ${zip}` : ''}
         </span>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {[
             { key: 'suggested', label: 'Suggested' },
             ...(origin ? [{ key: 'closest', label: 'Closest' }] : []),
