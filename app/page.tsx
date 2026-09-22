@@ -20,8 +20,8 @@ function CategoryIcon({ category, color }: { category: Category; color: string }
     case 'food_bev':
       return (
         <svg {...common}>
-          <rect x="8" y="11" width="16" height="18" rx="3" />
-          <rect x="14.5" y="2" width="3" height="10" rx="1.5" />
+          <rect x="7" y="6" width="18" height="4" rx="1.5" />
+          <path d="M9 11 L23 11 L21 28 L11 28 Z" />
         </svg>
       )
     case 'beauty':
@@ -33,9 +33,15 @@ function CategoryIcon({ category, color }: { category: Category; color: string }
     case 'kids_parties':
       return (
         <svg {...common}>
-          <ellipse cx="16" cy="12" rx="10" ry="12" />
-          <path d="M13 24 L19 24 L16 29 Z" />
-          <line x1="16" y1="24" x2="16" y2="24" stroke={color} strokeWidth="2" />
+          <ellipse cx="16" cy="11" rx="9" ry="11" />
+          <path d="M14 21 L18 21 L16 25 Z" />
+          <path d="M16 25 Q19 28 16 31" stroke={color} strokeWidth="2" fill="none" strokeLinecap="round" />
+        </svg>
+      )
+    case 'entertainment':
+      return (
+        <svg {...common}>
+          <path d="M16 2 L19.5 12 L30 12 L21.5 18.5 L25 29 L16 22.5 L7 29 L10.5 18.5 L2 12 L12.5 12 Z" />
         </svg>
       )
   }
@@ -45,12 +51,12 @@ export default function HomePage() {
   const categories = Object.keys(CATEGORY_META) as Category[]
 
   return (
-    <main className="max-w-4xl mx-auto px-6 pt-20 pb-24 text-center">
-      <h1 className="font-display text-[clamp(1.1rem,4.2vw,4rem)] font-semibold tracking-tight leading-[1.05] whitespace-nowrap">
-        Book a pop-up for your next event
+    <main className="max-w-4xl mx-auto px-6 pt-16 pb-24 text-center">
+      <h1 className="font-display text-[clamp(2.25rem,7.5vw,4.5rem)] font-semibold tracking-tight leading-[1.05]">
+        Book a pop-up
       </h1>
-      <p className="mt-4 text-lg text-[var(--ink-soft)]">
-        For your private or corporate event, anywhere in the country.
+      <p className="mt-4 text-base sm:text-lg text-[var(--ink-soft)]">
+        Turn your event into an experience people remember.
       </p>
 
       <div className="mt-7 flex flex-wrap justify-center gap-x-7 gap-y-4">
@@ -72,7 +78,7 @@ export default function HomePage() {
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
         <div className="relative border-2 border-[var(--ink)] rounded-xl bg-white flex flex-col overflow-hidden min-h-[280px]">
-          <div className="h-2" style={{ background: 'linear-gradient(90deg, #FFC94D, #F2941C, #E4482B)' }} />
+          <div className="h-2" style={{ background: 'linear-gradient(90deg, #FFD666, #FFAE1F, #EF5A2E)' }} />
           <div className="p-6 flex-1 flex flex-col">
             <h2 className="font-display text-xl font-semibold">Post your event</h2>
             <p className="text-sm text-[var(--ink-soft)] mt-2 flex-1">
