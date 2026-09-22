@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { supabase, EventRequest, PopupBusiness } from '@/lib/supabase'
+import { supabase, EventRequest } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
-type Access = 'checking' | 'needs-login' | 'needs-upgrade' | 'granted'
+type Access = 'checking' | 'needs-login' | 'needs-business' | 'granted'
 
 export default function EventsPage() {
   const router = useRouter()
@@ -20,17 +20,16 @@ export default function EventsPage() {
         return
       }
 
-      const { data: paidBusiness } = await supabase
+      const { data: business } = await supabase
         .from('popup_businesses')
         .select('id')
         .eq('owner_id', data.session.user.id)
-        .eq('tier', 'spotlighted')
         .eq('status', 'active')
         .limit(1)
         .maybeSingle()
 
-      if (!paidBusiness) {
-        setAccess('needs-upgrade')
+      if (!business) {
+        setAccess('needs-business')
         return
       }
 
@@ -42,8 +41,7 @@ export default function EventsPage() {
         .eq('status', 'open')
         .order('created_at', { ascending: false })
 
-      const eventList = (openEvents as EventRequest[]) ?? []
-      setEvents(eventList)
+      setEvents((openEvents as EventRequest[]) ?? [])
 
       const { data: bids } = await supabase.from('event_bids').select('event_request_id')
       const counts: Record<string, number> = {}
@@ -56,7 +54,7 @@ export default function EventsPage() {
 
   if (access === 'checking') return null
 
-  if (access === 'needs-login') {
+  if (access === 'needs-login' || access === 'needs-business') {
     return (
       <main className="max-w-2xl mx-auto px-6 py-16 text-center">
         <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
@@ -64,7 +62,7 @@ export default function EventsPage() {
         </h1>
         <p className="mt-4 text-lg text-[var(--ink-soft)]">
           People post their events here, and pop-up businesses like yours submit proposals
-          directly. List your business to start bidding.
+          directly. List your business — it's free — to start bidding.
         </p>
         <Link
           href="/list-your-business"
@@ -72,32 +70,14 @@ export default function EventsPage() {
         >
           Bid Events
         </Link>
-        <p className="mt-3 text-sm text-[var(--ink-soft)]">
-          Already have an account?{' '}
-          <Link href="/login?role=business&next=/events" className="underline">
-            Log in here →
-          </Link>
-        </p>
-      </main>
-    )
-  }
-
-  if (access === 'needs-upgrade') {
-    return (
-      <main className="max-w-2xl mx-auto px-6 py-16 text-center">
-        <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
-          Want to bid on more events in your area?
-        </h1>
-        <p className="mt-4 text-lg text-[var(--ink-soft)]">
-          Bidding on events is exclusive to the Spotlighted plan — upgrade
-          your listing to start submitting proposals.
-        </p>
-        <Link
-          href="/list-your-business"
-          className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90"
-        >
-          Bid Events
-        </Link>
+        {access === 'needs-login' && (
+          <p className="mt-3 text-sm text-[var(--ink-soft)]">
+            Already have an account?{' '}
+            <Link href="/login?role=business&next=/events" className="underline">
+              Log in here →
+            </Link>
+          </p>
+        )}
       </main>
     )
   }
@@ -108,11 +88,11 @@ export default function EventsPage() {
         Event requests looking for pop-ups.
       </h1>
       <p className="mt-3 text-[var(--ink-soft)] max-w-xl">
-        Submit a proposal directly to the customer. Each event is capped at 5 bids, so
-        act early.
+        Submit a proposal directly to the customer using a bid credit. Each event is
+        capped at 5 bids, so act early.
       </p>
 
-      <div className="mt-10 space-y-4">
+      <div className="mt-6 space-y-4">
         {events.length === 0 ? (
           <div className="border-2 border-dashed border-[var(--line)] rounded-xl p-12 text-center text-[var(--ink-soft)]">
             No open event requests right now. Check back soon.

@@ -12,7 +12,7 @@ export type PopupBusiness = {
   description: string | null
   phone: string | null
   status: string
-  tier: 'listed' | 'featured' | 'spotlighted'
+  tier: 'featured' | 'spotlighted'
   city: string | null
   state: string | null
   zip: string | null
@@ -58,6 +58,16 @@ export type WorkerProfile = {
   phone: string | null
   bio: string | null
   skills: string | null
+  created_at: string
+}
+
+export type Lead = {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  business_name: string
+  category: string | null
   created_at: string
 }
 

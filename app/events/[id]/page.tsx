@@ -5,13 +5,7 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { supabase, EventRequest, EventBid } from '@/lib/supabase'
 
-const BID_TIERS = [
-  { label: 'Up to 50 guests', fee: '$15' },
-  { label: '51–150 guests', fee: '$30' },
-  { label: '150+ guests', fee: '$50' },
-]
-
-type Access = 'checking' | 'needs-login' | 'needs-upgrade' | 'granted'
+type Access = 'checking' | 'needs-login' | 'needs-business' | 'granted'
 
 export default function EventDetailPage() {
   const params = useParams()
@@ -28,17 +22,16 @@ export default function EventDetailPage() {
         return
       }
 
-      const { data: paidBusiness } = await supabase
+      const { data: business } = await supabase
         .from('popup_businesses')
         .select('id')
         .eq('owner_id', data.session.user.id)
-        .eq('tier', 'spotlighted')
         .eq('status', 'active')
         .limit(1)
         .maybeSingle()
 
-      if (!paidBusiness) {
-        setAccess('needs-upgrade')
+      if (!business) {
+        setAccess('needs-business')
         return
       }
 
@@ -56,7 +49,7 @@ export default function EventDetailPage() {
 
   if (access === 'checking') return null
 
-  if (access === 'needs-login') {
+  if (access === 'needs-login' || access === 'needs-business') {
     return (
       <main className="max-w-2xl mx-auto px-6 py-16 text-center">
         <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
@@ -64,7 +57,7 @@ export default function EventDetailPage() {
         </h1>
         <p className="mt-4 text-lg text-[var(--ink-soft)]">
           People post their events here, and pop-up businesses like yours submit proposals
-          directly. List your business to start bidding.
+          directly. List your business — it's free — to start bidding.
         </p>
         <Link
           href="/list-your-business"
@@ -72,32 +65,14 @@ export default function EventDetailPage() {
         >
           Bid Events
         </Link>
-        <p className="mt-3 text-sm text-[var(--ink-soft)]">
-          Already have an account?{' '}
-          <Link href={`/login?role=business&next=/events/${id}`} className="underline">
-            Log in here →
-          </Link>
-        </p>
-      </main>
-    )
-  }
-
-  if (access === 'needs-upgrade') {
-    return (
-      <main className="max-w-2xl mx-auto px-6 py-16 text-center">
-        <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
-          Want to bid on more events in your area?
-        </h1>
-        <p className="mt-4 text-lg text-[var(--ink-soft)]">
-          Bidding on events is exclusive to the Spotlighted plan — upgrade
-          your listing to start submitting proposals.
-        </p>
-        <Link
-          href="/list-your-business"
-          className="mt-8 inline-block px-6 py-3 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90"
-        >
-          Bid Events
-        </Link>
+        {access === 'needs-login' && (
+          <p className="mt-3 text-sm text-[var(--ink-soft)]">
+            Already have an account?{' '}
+            <Link href={`/login?role=business&next=/events/${id}`} className="underline">
+              Log in here →
+            </Link>
+          </p>
+        )}
       </main>
     )
   }
@@ -134,21 +109,15 @@ export default function EventDetailPage() {
         ) : (
           <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white">
             <p className="text-sm text-[var(--ink-soft)] mb-4">
-              Submitting a proposal has a small fee, scaled to event size:
+              Submitting a proposal costs <strong>1 bid credit ($20)</strong>. Buying
+              credits in bulk brings the price down — see{' '}
+              <Link href="/list-your-business" className="underline">bid credit packs</Link>.
             </p>
-            <div className="grid grid-cols-3 gap-3 mb-5">
-              {BID_TIERS.map((tier) => (
-                <div key={tier.label} className="border-2 border-[var(--line)] rounded-lg p-3 text-center">
-                  <p className="font-display text-lg font-semibold">{tier.fee}</p>
-                  <p className="text-xs text-[var(--ink-soft)] mt-1">{tier.label}</p>
-                </div>
-              ))}
-            </div>
             <a
               href={`mailto:popupspotlightinfo@gmail.com?subject=${encodeURIComponent(
                 `Bid on event: ${event.event_type || 'Event'} (${event.id})`
               )}&body=${encodeURIComponent(
-                'Include your proposal, price quote, and business name. We\'ll confirm your fee and get your bid live.'
+                'Include your proposal, price quote, and business name. We\'ll confirm your credit balance (or take payment) and get your bid live.'
               )}`}
               className="block text-center px-6 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] hover:opacity-90"
             >

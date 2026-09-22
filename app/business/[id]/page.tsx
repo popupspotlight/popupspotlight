@@ -42,11 +42,11 @@ export default async function BusinessProfilePage({ params }: { params: { id: st
   const avgRating = reviewList.length
     ? reviewList.reduce((sum, r) => sum + r.rating, 0) / reviewList.length
     : null
-  const canShowPhotos = biz.tier === 'featured' || biz.tier === 'spotlighted'
+  const hasPhotos = photoList.length > 0
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
-      {!(canShowPhotos && photoList.length > 0) && meta?.image && (
+      {!hasPhotos && meta?.image && (
         <img
           src={meta.image}
           alt=""
@@ -107,7 +107,7 @@ export default async function BusinessProfilePage({ params }: { params: { id: st
         Booking requests are handled directly for now while we build online booking.
       </p>
 
-      {canShowPhotos && photoList.length > 0 && (
+      {hasPhotos && (
         <div className="mt-10">
           <h2 className="font-display text-lg font-semibold mb-3">Photos</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -122,12 +122,6 @@ export default async function BusinessProfilePage({ params }: { params: { id: st
             ))}
           </div>
         </div>
-      )}
-
-      {!canShowPhotos && (
-        <p className="mt-10 text-sm text-[var(--ink-soft)] italic">
-          This business hasn't upgraded to show photos yet.
-        </p>
       )}
 
       <div className="mt-12">

@@ -8,7 +8,6 @@ type Access = 'checking' | 'guest' | 'granted'
 
 export default function JobBoardPage() {
   const [access, setAccess] = useState<Access>('checking')
-  const [isSpotlighted, setIsSpotlighted] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -16,17 +15,15 @@ export default function JobBoardPage() {
         setAccess('guest')
         return
       }
-      const { data: paidBusiness } = await supabase
+      const { data: business } = await supabase
         .from('popup_businesses')
-        .select('id, tier')
+        .select('id')
         .eq('owner_id', data.session.user.id)
-        .in('tier', ['featured', 'spotlighted'])
         .eq('status', 'active')
         .limit(1)
         .maybeSingle()
 
-      setIsSpotlighted(paidBusiness?.tier === 'spotlighted')
-      setAccess(paidBusiness ? 'granted' : 'guest')
+      setAccess(business ? 'granted' : 'guest')
     })
   }, [])
 
@@ -49,17 +46,12 @@ export default function JobBoardPage() {
             <h2 className="font-display text-lg font-semibold">Browse open shifts</h2>
             <p className="text-sm text-[var(--ink-soft)] mt-2">See what's posted across the platform.</p>
           </Link>
-          {isSpotlighted ? (
-            <Link href="/events" className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white hover:-translate-y-0.5 transition-transform sm:col-span-2">
-              <h2 className="font-display text-lg font-semibold">Bid on events</h2>
-              <p className="text-sm text-[var(--ink-soft)] mt-2">Collaborate with other businesses by bidding on posted events.</p>
-            </Link>
-          ) : (
-            <Link href="/list-your-business" className="border-2 border-dashed border-[var(--line)] rounded-xl p-6 bg-white hover:-translate-y-0.5 transition-transform sm:col-span-2">
-              <h2 className="font-display text-lg font-semibold">Bid on events 🔒</h2>
-              <p className="text-sm text-[var(--ink-soft)] mt-2">Exclusive to Spotlighted. Upgrade to unlock the events marketplace.</p>
-            </Link>
-          )}
+          <Link href="/events" className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white hover:-translate-y-0.5 transition-transform sm:col-span-2">
+            <h2 className="font-display text-lg font-semibold">Bid on events</h2>
+            <p className="text-sm text-[var(--ink-soft)] mt-2">
+              Collaborate with other businesses by bidding on posted events.
+            </p>
+          </Link>
         </div>
       </main>
     )

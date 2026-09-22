@@ -50,7 +50,7 @@ function rotate<T>(arr: T[], offset: number): T[] {
   return [...arr.slice(n), ...arr.slice(0, n)]
 }
 
-const TIER_WEIGHT: Record<string, number> = { spotlighted: 0, featured: 1, listed: 2 }
+const TIER_WEIGHT: Record<string, number> = { spotlighted: 0, featured: 1 }
 
 export default async function SearchPage({
   searchParams,

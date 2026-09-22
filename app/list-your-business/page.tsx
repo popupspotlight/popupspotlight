@@ -7,15 +7,15 @@ import { CATEGORY_META, Category } from '@/lib/categories'
 const PILLARS = [
   {
     title: 'The Directory',
-    description: 'A real profile — photos, reviews, and your story — searchable by zip code across the country. Free, full-featured, always.',
+    description: 'A real profile — photos, your story, and reviews from real customers — that shows up when people search by zip code, anywhere in the country. It\'s how people find you when they\'re planning something and don\'t know who to book yet.',
   },
   {
     title: 'The Job Board',
-    description: 'Post shifts, find gig talent, no algorithm managing who you hire. You only pay when you post.',
+    description: 'Need an extra set of hands for a busy weekend? Post the shift and gig workers apply directly to you. You see every applicant and decide who to hire — no algorithm making that call for you.',
   },
   {
     title: 'Bid Events',
-    description: 'Private and corporate event requests posted directly by customers. You only pay when you bid.',
+    description: 'People post real events here — birthdays, weddings, corporate parties — and businesses like yours submit a proposal to win the booking. A direct line to customers actively looking to book someone right now.',
   },
 ]
 
@@ -99,7 +99,7 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
         disabled={loading}
         className="w-full py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90 disabled:opacity-50"
       >
-        {loading ? 'Submitting…' : 'Continue'}
+        {loading ? 'Submitting…' : 'List my business free'}
       </button>
     </form>
   )
@@ -112,14 +112,16 @@ export default function ListYourBusinessPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-16">
       <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight max-w-2xl">
-        Free to list. Pay only for what you use.
+        List your pop-up business — free.
       </h1>
       <p className="mt-4 text-lg text-[var(--ink-soft)] max-w-xl">
-        No subscription required. Your listing is free forever — pay as you go, or save
-        with an optional monthly bundle if you post and bid often.
+        Get discovered by people planning private and corporate events, hire gig talent
+        when you need extra hands, and win new bookings by bidding directly on events
+        people post. Your listing costs nothing — you only pay for the extras you
+        actually use.
       </p>
 
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-5">
         {PILLARS.map((p) => (
           <div key={p.title} className="border-2 border-[var(--line)] rounded-xl p-5 bg-white">
             <h2 className="font-display text-base font-semibold">{p.title}</h2>
@@ -130,8 +132,9 @@ export default function ListYourBusinessPage() {
 
       {!unlocked ? (
         <div className="mt-10">
+          <h2 className="font-display text-lg font-semibold mb-1">Step 1: list for free</h2>
           <p className="text-sm text-[var(--ink-soft)] mb-4">
-            Tell us about your business to get your free listing started.
+            Takes less than a minute. No credit card, no commitment.
           </p>
           <LeadForm onSubmitted={() => setUnlocked(true)} />
         </div>
@@ -145,7 +148,7 @@ export default function ListYourBusinessPage() {
       ) : (
         <div className="mt-10 space-y-12">
           <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg">
-            <h2 className="font-display text-xl font-semibold">Your free listing</h2>
+            <h2 className="font-display text-xl font-semibold">Confirm your free listing</h2>
             <p className="text-sm text-[var(--ink-soft)] mt-2">
               Full profile with photos, description, and reviews — everything included,
               no cost, ever.
@@ -158,11 +161,19 @@ export default function ListYourBusinessPage() {
             </button>
           </div>
 
+          <div>
+            <h2 className="font-display text-2xl font-semibold">Once you're listed</h2>
+            <p className="text-[var(--ink-soft)] mt-2 max-w-xl">
+              Here's how PopupSpotlight can help you find talent and win more bookings —
+              all optional, and you only pay if and when you actually use them.
+            </p>
+          </div>
+
           <div className="relative border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg">
             <span className="absolute -top-3 left-6 text-xs font-medium bg-[var(--gold)] text-[var(--ink)] px-2.5 py-1 rounded-full">
               Optional
             </span>
-            <h2 className="font-display text-xl font-semibold">Monthly bundle</h2>
+            <h3 className="font-display text-xl font-semibold">Monthly bundle</h3>
             <p className="mt-2">
               <span className="font-display text-3xl font-semibold">$79</span>
               <span className="text-[var(--ink-soft)]">/month</span>
@@ -188,9 +199,10 @@ export default function ListYourBusinessPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-xl font-semibold">Bid credits</h2>
+            <h3 className="font-display text-xl font-semibold">Bid credits</h3>
             <p className="text-sm text-[var(--ink-soft)] mt-1 mb-5">
-              1 credit = 1 bid on an event. Buy in bulk to save.
+              Businesses post events, you submit proposals to win the booking. 1 credit =
+              1 bid. Buy in bulk to save.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {BID_CREDIT_PACKS.map((pack) => (
@@ -216,9 +228,11 @@ export default function ListYourBusinessPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-xl font-semibold">Job posts</h2>
+            <h3 className="font-display text-xl font-semibold">Job posts</h3>
             <p className="text-sm text-[var(--ink-soft)] mt-1 mb-5">
-              Pay per post, priced by how long and how many people you need.
+              Need extra hands for a shift? Post it to the Job Board and gig workers
+              apply directly to you. Pay per post, priced by how long and how many
+              people you need.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {JOB_POST_TIERS.map((tier) => (
