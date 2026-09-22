@@ -68,6 +68,11 @@ export type Lead = {
   phone: string | null
   business_name: string
   category: string | null
+  years_in_business: string | null
+  city: string | null
+  state: string | null
+  zip: string | null
+  description: string | null
   created_at: string
 }
 

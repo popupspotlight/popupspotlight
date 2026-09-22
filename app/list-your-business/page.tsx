@@ -34,23 +34,53 @@ const JOB_POST_TIERS = [
   { name: 'Team build', price: '$60', description: 'Unlimited workers, up to 30 days.' },
 ]
 
+const STEPS = ['You', 'Business', 'Location', 'Your story']
+
 function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
+  const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const categories = Object.keys(CATEGORY_META) as Category[]
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    business_name: '',
+    category: '',
+    years_in_business: '',
+    city: '',
+    state: '',
+    zip: '',
+    description: '',
+  })
+
+  function update(field: string, value: string) {
+    setForm((f) => ({ ...f, [field]: value }))
+  }
+
+  function stepValid() {
+    if (step === 0) return form.name.trim() && form.email.trim()
+    if (step === 1) return form.business_name.trim() && form.category
+    if (step === 2) return form.city.trim() && form.state.trim() && form.zip.trim()
+    return true
+  }
+
+  async function handleSubmit() {
     setLoading(true)
     setError(null)
 
-    const formData = new FormData(e.currentTarget)
     const { error } = await supabase.from('leads').insert({
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone') || null,
-      business_name: formData.get('business_name'),
-      category: formData.get('category') || null,
+      name: form.name,
+      email: form.email,
+      phone: form.phone || null,
+      business_name: form.business_name,
+      category: form.category || null,
+      years_in_business: form.years_in_business || null,
+      city: form.city || null,
+      state: form.state || null,
+      zip: form.zip || null,
+      description: form.description || null,
     })
 
     setLoading(false)
@@ -62,46 +92,134 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
     onSubmitted()
   }
 
+  const inputClass = 'w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1'
+
   return (
-    <form onSubmit={handleSubmit} className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white space-y-3 max-w-lg">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label className="text-xs text-[var(--ink-soft)]">Your name</label>
-          <input name="name" required className="w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1" />
-        </div>
-        <div>
-          <label className="text-xs text-[var(--ink-soft)]">Business name</label>
-          <input name="business_name" required className="w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1" />
-        </div>
+    <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg">
+      <div className="flex items-center gap-2 mb-5">
+        {STEPS.map((label, i) => (
+          <div key={label} className="flex-1">
+            <div className={`h-1.5 rounded-full ${i <= step ? 'bg-[var(--gold)]' : 'bg-[var(--line)]'}`} />
+          </div>
+        ))}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label className="text-xs text-[var(--ink-soft)]">Email</label>
-          <input name="email" type="email" required className="w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1" />
+      <p className="text-xs text-[var(--ink-soft)] mb-4">
+        Step {step + 1} of {STEPS.length} — {STEPS[step]}
+      </p>
+
+      {step === 0 && (
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">Your name</label>
+            <input value={form.name} onChange={(e) => update('name', e.target.value)} className={inputClass} />
+          </div>
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">Email</label>
+            <input type="email" value={form.email} onChange={(e) => update('email', e.target.value)} className={inputClass} />
+          </div>
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">Phone</label>
+            <input value={form.phone} onChange={(e) => update('phone', e.target.value)} className={inputClass} />
+          </div>
         </div>
-        <div>
-          <label className="text-xs text-[var(--ink-soft)]">Phone</label>
-          <input name="phone" className="w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1" />
+      )}
+
+      {step === 1 && (
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">Business name</label>
+            <input value={form.business_name} onChange={(e) => update('business_name', e.target.value)} className={inputClass} />
+          </div>
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">What kind of pop-up?</label>
+            <select value={form.category} onChange={(e) => update('category', e.target.value)} className={`${inputClass} bg-white`}>
+              <option value="">Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat} value={CATEGORY_META[cat].label}>{CATEGORY_META[cat].label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">How long have you been in business?</label>
+            <select value={form.years_in_business} onChange={(e) => update('years_in_business', e.target.value)} className={`${inputClass} bg-white`}>
+              <option value="">Select one</option>
+              <option value="Just starting out">Just starting out</option>
+              <option value="Less than 1 year">Less than 1 year</option>
+              <option value="1-2 years">1-2 years</option>
+              <option value="3-5 years">3-5 years</option>
+              <option value="5+ years">5+ years</option>
+            </select>
+          </div>
         </div>
+      )}
+
+      {step === 2 && (
+        <div className="space-y-3">
+          <p className="text-xs text-[var(--ink-soft)]">
+            Your home base — this is how customers searching by zip code will find you.
+          </p>
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">City</label>
+            <input value={form.city} onChange={(e) => update('city', e.target.value)} className={inputClass} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-[var(--ink-soft)]">State</label>
+              <input value={form.state} onChange={(e) => update('state', e.target.value)} maxLength={2} placeholder="CO" className={inputClass} />
+            </div>
+            <div>
+              <label className="text-xs text-[var(--ink-soft)]">Zip code</label>
+              <input value={form.zip} onChange={(e) => update('zip', e.target.value)} pattern="[0-9]{5}" maxLength={5} className={inputClass} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">Tell customers what makes your pop-up special</label>
+            <textarea
+              value={form.description}
+              onChange={(e) => update('description', e.target.value)}
+              placeholder="What you offer, what makes you different, the experience customers can expect"
+              className={`${inputClass} min-h-[110px]`}
+            />
+            <p className="text-xs text-[var(--ink-soft)] mt-1">This becomes your public listing description.</p>
+          </div>
+        </div>
+      )}
+
+      {error && <p className="text-sm text-red-600 mt-3">{error}</p>}
+
+      <div className="flex gap-3 mt-6">
+        {step > 0 && (
+          <button
+            onClick={() => setStep((s) => s - 1)}
+            className="px-5 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
+          >
+            Back
+          </button>
+        )}
+        {step < STEPS.length - 1 ? (
+          <button
+            onClick={() => stepValid() && setStep((s) => s + 1)}
+            disabled={!stepValid()}
+            className="flex-1 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90 disabled:opacity-40"
+          >
+            Next
+          </button>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="flex-1 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90 disabled:opacity-50"
+          >
+            {loading ? 'Submitting…' : 'List my business free'}
+          </button>
+        )}
       </div>
-      <div>
-        <label className="text-xs text-[var(--ink-soft)]">What kind of pop-up?</label>
-        <select name="category" defaultValue="" className="w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1 bg-white">
-          <option value="">Select a category</option>
-          {categories.map((cat) => (
-            <option key={cat} value={CATEGORY_META[cat].label}>{CATEGORY_META[cat].label}</option>
-          ))}
-        </select>
-      </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90 disabled:opacity-50"
-      >
-        {loading ? 'Submitting…' : 'List my business free'}
-      </button>
-    </form>
+    </div>
   )
 }
 
