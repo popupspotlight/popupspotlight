@@ -7,8 +7,11 @@ function CategoryIcon({ category, color }: { category: Category; color: string }
     case 'hat_bar':
       return (
         <svg {...common}>
-          <path d="M6 20 Q6 8 16 8 Q26 8 26 20 Z" />
-          <rect x="2" y="20" width="28" height="4" rx="2" />
+          <path d="M1 21 C1 17 8 15.5 16 16.5 C24 15.5 31 17 31 21 C31 24.5 24 22 16 23 C8 22 1 24.5 1 21 Z" />
+          <path d="M0.5 19.5 Q -1 14 3 15.5 Q 3.5 18.5 2 20.5 Z" />
+          <path d="M31.5 19.5 Q 33 14 29 15.5 Q 28.5 18.5 30 20.5 Z" />
+          <path d="M9.5 17.5 Q9 5 16 5 Q23 5 22.5 17.5 Q16 19.5 9.5 17.5 Z" />
+          <path d="M16 6.5 Q14.8 11 16 15" stroke="#000" strokeOpacity="0.2" strokeWidth="1.1" fill="none" strokeLinecap="round" />
         </svg>
       )
     case 'jewelry':
@@ -53,10 +56,10 @@ export default function HomePage() {
   return (
     <main className="max-w-4xl mx-auto px-6 pt-16 pb-24 text-center">
       <h1 className="font-display text-[clamp(2.25rem,7.5vw,4.5rem)] font-semibold tracking-tight leading-[1.05]">
-        Book a pop-up
+        Book a Pop-up
       </h1>
       <p className="mt-4 text-base sm:text-lg text-[var(--ink-soft)]">
-        Turn your event into an experience people remember.
+        Turn your event into an experience people remember
       </p>
 
       <div className="mt-7 flex flex-wrap justify-center gap-x-7 gap-y-4">
