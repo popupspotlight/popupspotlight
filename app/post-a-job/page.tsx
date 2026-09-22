@@ -48,6 +48,13 @@ export default function PostAJobPage() {
         Job posting is manual for now while we build self-serve posting. Send us the role,
         pay, dates, and how many people you need — we'll get it live within a day.
       </p>
+      <p className="text-xs text-[var(--ink-soft)] mt-2">
+        Posting often? The{' '}
+        <a href="https://buy.stripe.com/6oU8wRckR9IA9kB8ifcAo00" target="_blank" rel="noopener noreferrer" className="underline">
+          $79/mo bundle
+        </a>{' '}
+        includes 1 free job post every month.
+      </p>
     </main>
   )
 }
