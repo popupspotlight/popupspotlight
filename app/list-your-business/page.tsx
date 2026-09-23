@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { geocodeZip } from '@/lib/geocode'
 import { CATEGORY_META, Category } from '@/lib/categories'
 
 const PILLARS = [
@@ -21,15 +23,17 @@ const PILLARS = [
 
 const STEPS = ['Business', 'Your story', 'Location', 'You']
 
-function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
+function LeadForm() {
+  const router = useRouter()
   const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [checkEmail, setCheckEmail] = useState<string | null>(null)
   const categories = Object.keys(CATEGORY_META) as Category[]
 
   const [form, setForm] = useState({
     business_name: '',
-    category: '',
+    category: '' as Category | '',
     years_in_business: '',
     description: '',
     city: '',
@@ -38,6 +42,7 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
     name: '',
     email: '',
     phone: '',
+    password: '',
   })
 
   function update(field: string, value: string) {
@@ -48,6 +53,7 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
     if (step === 0) return form.business_name.trim() && form.category
     if (step === 1) return true
     if (step === 2) return form.city.trim() && form.state.trim() && form.zip.trim()
+    if (step === 3) return form.name.trim() && form.email.trim() && form.password.length >= 6
     return true
   }
 
@@ -55,29 +61,76 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.from('leads').insert({
+    // Keep a lead record regardless — useful even if account creation hits a snag.
+    supabase.from('leads').insert({
       name: form.name,
       email: form.email,
       phone: form.phone || null,
       business_name: form.business_name,
-      category: form.category || null,
+      category: CATEGORY_META[form.category as Category]?.label ?? form.category,
       years_in_business: form.years_in_business || null,
       city: form.city || null,
       state: form.state || null,
       zip: form.zip || null,
       description: form.description || null,
+    }).then(() => {})
+
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+    })
+
+    if (signUpError || !signUpData.user) {
+      setLoading(false)
+      setError(signUpError?.message ?? 'Could not create your account. Please try again.')
+      return
+    }
+
+    const coords = form.zip ? await geocodeZip(form.zip) : null
+
+    const { error: businessError } = await supabase.from('popup_businesses').insert({
+      owner_id: signUpData.user.id,
+      name: form.business_name,
+      category: form.category,
+      description: form.description || null,
+      phone: form.phone || null,
+      city: form.city || null,
+      state: form.state || null,
+      zip: form.zip || null,
+      lat: coords?.lat ?? null,
+      lng: coords?.lng ?? null,
+      status: 'active',
     })
 
     setLoading(false)
-    if (error) {
-      console.error(error)
-      setError('Something went wrong. Please try again.')
+
+    if (businessError) {
+      console.error(businessError)
+      setError('Your account was created, but we couldn\'t finish setting up your listing. Email us and we\'ll sort it out.')
       return
     }
-    onSubmitted()
+
+    if (signUpData.session) {
+      router.push('/account')
+      router.refresh()
+    } else {
+      setCheckEmail(form.email)
+    }
   }
 
   const inputClass = 'w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1'
+
+  if (checkEmail) {
+    return (
+      <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg mx-auto text-left">
+        <p className="font-medium">Your spot is claimed — almost done.</p>
+        <p className="text-sm text-[var(--ink-soft)] mt-2">
+          Your listing is live. We sent a confirmation link to <strong>{checkEmail}</strong> —
+          click it, then log in to reach your business portal.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg mx-auto text-left">
@@ -103,7 +156,7 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
             <select value={form.category} onChange={(e) => update('category', e.target.value)} className={`${inputClass} bg-white`}>
               <option value="">Select a category</option>
               {categories.map((cat) => (
-                <option key={cat} value={CATEGORY_META[cat].label}>{CATEGORY_META[cat].label}</option>
+                <option key={cat} value={cat}>{CATEGORY_META[cat].label}</option>
               ))}
             </select>
           </div>
@@ -172,6 +225,11 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
             <label className="text-xs text-[var(--ink-soft)]">Phone</label>
             <input value={form.phone} onChange={(e) => update('phone', e.target.value)} className={inputClass} />
           </div>
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">Create a password</label>
+            <input type="password" minLength={6} value={form.password} onChange={(e) => update('password', e.target.value)} className={inputClass} />
+            <p className="text-xs text-[var(--ink-soft)] mt-1">This logs you into your business portal — 6 characters minimum.</p>
+          </div>
         </div>
       )}
 
@@ -197,10 +255,10 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
         ) : (
           <button
             onClick={handleSubmit}
-            disabled={loading}
+            disabled={loading || !stepValid()}
             className="flex-1 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90 disabled:opacity-50"
           >
-            {loading ? 'Submitting…' : 'Claim My Spot'}
+            {loading ? 'Setting up your spot…' : 'Claim My Spot'}
           </button>
         )}
       </div>
@@ -209,8 +267,6 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
 }
 
 export default function ListYourBusinessPage() {
-  const [submitted, setSubmitted] = useState(false)
-
   return (
     <main className="max-w-3xl mx-auto px-6 py-16 text-center">
       <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
@@ -221,18 +277,7 @@ export default function ListYourBusinessPage() {
       </p>
 
       <div className="mt-8">
-        {!submitted ? (
-          <LeadForm onSubmitted={() => setSubmitted(true)} />
-        ) : (
-          <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg mx-auto text-left">
-            <p className="font-medium">You're all set.</p>
-            <p className="text-sm text-[var(--ink-soft)] mt-1">
-              We'll get your free listing live within a day and follow up by email. Once
-              you're listed, you can post jobs and bid on events any time — we'll walk you
-              through pricing right when you're ready to use them.
-            </p>
-          </div>
-        )}
+        <LeadForm />
       </div>
 
       <div className="mt-16 text-left">
