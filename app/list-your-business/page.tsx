@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { geocodeZip } from '@/lib/geocode'
@@ -23,13 +24,23 @@ const PILLARS = [
 
 const STEPS = ['Business', 'Your story', 'Location', 'You']
 
-function LeadForm() {
+type SessionState =
+  | { status: 'checking' }
+  | { status: 'anonymous' }
+  | { status: 'logged-in-no-business'; userId: string; email: string }
+  | { status: 'logged-in-has-business'; businessName: string }
+
+function LeadForm({ session }: { session: SessionState }) {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [checkEmail, setCheckEmail] = useState<string | null>(null)
+  const [stage, setStage] = useState<'form' | 'retry-business' | 'check-email'>('form')
+  const [ownerId, setOwnerId] = useState<string | null>(null)
   const categories = Object.keys(CATEGORY_META) as Category[]
+
+  const loggedIn = session.status === 'logged-in-no-business'
+  const effectiveSteps = loggedIn ? STEPS.slice(0, 3) : STEPS
 
   const [form, setForm] = useState({
     business_name: '',
@@ -57,11 +68,50 @@ function LeadForm() {
     return true
   }
 
+  async function createBusiness(userId: string) {
+    const coords = form.zip ? await geocodeZip(form.zip) : null
+
+    const { error: businessError } = await supabase.from('popup_businesses').insert({
+      owner_id: userId,
+      name: form.business_name,
+      category: form.category,
+      description: form.description || null,
+      phone: form.phone || null,
+      city: form.city || null,
+      state: form.state || null,
+      zip: form.zip || null,
+      lat: coords?.lat ?? null,
+      lng: coords?.lng ?? null,
+      status: 'active',
+    })
+
+    if (businessError) {
+      console.error(businessError)
+      setOwnerId(userId)
+      setStage('retry-business')
+      setError('Your account is ready, but we couldn\'t finish creating your listing. This is safe to retry — nothing was duplicated.')
+      return false
+    }
+    return true
+  }
+
   async function handleSubmit() {
     setLoading(true)
     setError(null)
 
-    // Keep a lead record regardless — useful even if account creation hits a snag.
+    // Logged in already (e.g. as a worker or consumer) — attach the
+    // business to that existing identity instead of creating a new one.
+    if (loggedIn) {
+      const created = await createBusiness(session.userId)
+      setLoading(false)
+      if (created) {
+        router.push('/account')
+        router.refresh()
+      }
+      return
+    }
+
+    // Recoverable backup regardless of what happens next.
     supabase.from('leads').insert({
       name: form.name,
       email: form.email,
@@ -80,54 +130,98 @@ function LeadForm() {
       password: form.password,
     })
 
-    if (signUpError || !signUpData.user) {
+    if (signUpError) {
       setLoading(false)
-      setError(signUpError?.message ?? 'Could not create your account. Please try again.')
+      if (signUpError.message.toLowerCase().includes('already registered') ||
+          signUpError.message.toLowerCase().includes('already exists')) {
+        setError('An account with that email already exists. Log in instead, and we\'ll get your business connected to it.')
+      } else {
+        setError(signUpError.message)
+      }
       return
     }
 
-    const coords = form.zip ? await geocodeZip(form.zip) : null
+    if (!signUpData.user) {
+      setLoading(false)
+      setError('Could not create your account. Please try again.')
+      return
+    }
 
-    const { error: businessError } = await supabase.from('popup_businesses').insert({
-      owner_id: signUpData.user.id,
-      name: form.business_name,
-      category: form.category,
-      description: form.description || null,
-      phone: form.phone || null,
-      city: form.city || null,
-      state: form.state || null,
-      zip: form.zip || null,
-      lat: coords?.lat ?? null,
-      lng: coords?.lng ?? null,
-      status: 'active',
-    })
+    if (!signUpData.session) {
+      // Confirmation still required for some reason — the account exists
+      // but we can't create the business yet without an authenticated
+      // session. They'll be prompted to finish after confirming and logging in.
+      setLoading(false)
+      setStage('check-email')
+      return
+    }
 
+    const created = await createBusiness(signUpData.user.id)
     setLoading(false)
-
-    if (businessError) {
-      console.error(businessError)
-      setError('Your account was created, but we couldn\'t finish setting up your listing. Email us and we\'ll sort it out.')
-      return
-    }
-
-    if (signUpData.session) {
+    if (created) {
       router.push('/account')
       router.refresh()
-    } else {
-      setCheckEmail(form.email)
+    }
+  }
+
+  async function retryBusinessCreation() {
+    if (!ownerId) return
+    setLoading(true)
+    setError(null)
+    const created = await createBusiness(ownerId)
+    setLoading(false)
+    if (created) {
+      router.push('/account')
+      router.refresh()
     }
   }
 
   const inputClass = 'w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1'
 
-  if (checkEmail) {
+  if (session.status === 'checking') return null
+
+  if (session.status === 'logged-in-has-business') {
     return (
       <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg mx-auto text-left">
-        <p className="font-medium">Your spot is claimed — almost done.</p>
+        <p className="font-medium">You already have a listing — {session.businessName}.</p>
         <p className="text-sm text-[var(--ink-soft)] mt-2">
-          Your listing is live. We sent a confirmation link to <strong>{checkEmail}</strong> —
-          click it, then log in to reach your business portal.
+          One business per account for now. Head to your account to see it.
         </p>
+        <Link
+          href="/account"
+          className="mt-4 inline-block px-5 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90"
+        >
+          Go to your account
+        </Link>
+      </div>
+    )
+  }
+
+  if (stage === 'check-email') {
+    return (
+      <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg mx-auto text-left">
+        <p className="font-medium">Almost there.</p>
+        <p className="text-sm text-[var(--ink-soft)] mt-2">
+          We sent a confirmation link to <strong>{form.email}</strong>. Click it, then{' '}
+          <Link href="/login?role=business&next=/list-your-business" className="underline">log in here</Link>{' '}
+          to finish creating your listing.
+        </p>
+      </div>
+    )
+  }
+
+  if (stage === 'retry-business') {
+    return (
+      <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg mx-auto text-left">
+        <p className="font-medium">Your account is ready.</p>
+        <p className="text-sm text-[var(--ink-soft)] mt-2">{error}</p>
+        <button
+          onClick={retryBusinessCreation}
+          disabled={loading}
+          className="mt-4 w-full py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90 disabled:opacity-50"
+        >
+          {loading ? 'Trying again…' : 'Try again'}
+        </button>
       </div>
     )
   }
@@ -135,14 +229,14 @@ function LeadForm() {
   return (
     <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg mx-auto text-left">
       <div className="flex items-center gap-2 mb-5">
-        {STEPS.map((label, i) => (
+        {effectiveSteps.map((label, i) => (
           <div key={label} className="flex-1">
             <div className={`h-1.5 rounded-full ${i <= step ? 'bg-[var(--gold)]' : 'bg-[var(--line)]'}`} />
           </div>
         ))}
       </div>
       <p className="text-xs text-[var(--ink-soft)] mb-4">
-        Step {step + 1} of {STEPS.length} — {STEPS[step]}
+        Step {step + 1} of {effectiveSteps.length} — {effectiveSteps[step]}
       </p>
 
       {step === 0 && (
@@ -208,10 +302,13 @@ function LeadForm() {
               <input value={form.zip} onChange={(e) => update('zip', e.target.value)} pattern="[0-9]{5}" maxLength={5} className={inputClass} />
             </div>
           </div>
+          {!loggedIn && (
+            <p className="text-xs text-[var(--ink-soft)]">One more step after this — creating your login.</p>
+          )}
         </div>
       )}
 
-      {step === 3 && (
+      {step === 3 && !loggedIn && (
         <div className="space-y-3">
           <div>
             <label className="text-xs text-[var(--ink-soft)]">Your name</label>
@@ -233,7 +330,7 @@ function LeadForm() {
         </div>
       )}
 
-      {error && <p className="text-sm text-red-600 mt-3">{error}</p>}
+      {error && stage === 'form' && <p className="text-sm text-red-600 mt-3">{error}</p>}
 
       <div className="flex gap-3 mt-6">
         {step > 0 && (
@@ -244,7 +341,7 @@ function LeadForm() {
             Back
           </button>
         )}
-        {step < STEPS.length - 1 ? (
+        {step < effectiveSteps.length - 1 ? (
           <button
             onClick={() => stepValid() && setStep((s) => s + 1)}
             disabled={!stepValid()}
@@ -255,7 +352,7 @@ function LeadForm() {
         ) : (
           <button
             onClick={handleSubmit}
-            disabled={loading || !stepValid()}
+            disabled={loading || (!loggedIn && !stepValid())}
             className="flex-1 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90 disabled:opacity-50"
           >
             {loading ? 'Setting up your spot…' : 'Claim My Spot'}
@@ -267,6 +364,34 @@ function LeadForm() {
 }
 
 export default function ListYourBusinessPage() {
+  const [session, setSession] = useState<SessionState>({ status: 'checking' })
+
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!data.session) {
+        setSession({ status: 'anonymous' })
+        return
+      }
+      const { data: existing } = await supabase
+        .from('popup_businesses')
+        .select('name')
+        .eq('owner_id', data.session.user.id)
+        .eq('status', 'active')
+        .limit(1)
+        .maybeSingle()
+
+      if (existing) {
+        setSession({ status: 'logged-in-has-business', businessName: existing.name })
+      } else {
+        setSession({
+          status: 'logged-in-no-business',
+          userId: data.session.user.id,
+          email: data.session.user.email ?? '',
+        })
+      }
+    })
+  }, [])
+
   return (
     <main className="max-w-3xl mx-auto px-6 py-16 text-center">
       <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
@@ -277,7 +402,7 @@ export default function ListYourBusinessPage() {
       </p>
 
       <div className="mt-8">
-        <LeadForm />
+        <LeadForm session={session} />
       </div>
 
       <div className="mt-16 text-left">

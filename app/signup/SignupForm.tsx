@@ -2,15 +2,10 @@
 
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 const COPY = {
-  business: {
-    title: 'Sign up as a business.',
-    subtitle: 'List your pop-up, post jobs, and bid on events.',
-    afterConfirm: 'Click the link, then come back and log in. Email us to get your business listed.',
-  },
   worker: {
     title: 'Sign up to find work.',
     subtitle: 'Create a FREE talent profile and apply to pop-up shifts near you.',
@@ -19,16 +14,26 @@ const COPY = {
 }
 
 export default function SignupForm() {
+  const router = useRouter()
   const searchParams = useSearchParams()
-  const role = searchParams.get('role') === 'worker' ? 'worker' : 'business'
-  const copy = COPY[role]
-  const next = role === 'worker' ? '/workers/new' : '/account'
+  const role = searchParams.get('role')
+
+  const copy = COPY.worker
+  const next = '/workers/new'
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
+
+  // Business onboarding now lives entirely at /list-your-business, which
+  // creates the account and the connected listing together — no separate,
+  // disconnected "just an account" path anymore.
+  if (role === 'business') {
+    if (typeof window !== 'undefined') router.replace('/list-your-business')
+    return null
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -95,21 +100,15 @@ export default function SignupForm() {
 
       <p className="text-sm text-[var(--ink-soft)] mt-4">
         Already have an account?{' '}
-        <Link href={`/login?role=${role}${next !== '/account' ? `&next=${next}` : ''}`} className="underline">
+        <Link href={`/login?role=worker&next=${next}`} className="underline">
           Log in
         </Link>
       </p>
-      {role === 'business' ? (
-        <p className="text-xs text-[var(--ink-soft)] mt-2">
-          Looking for pop-up work instead?{' '}
-          <Link href="/signup?role=worker" className="underline">Sign up as talent</Link>
-        </p>
-      ) : (
-        <p className="text-xs text-[var(--ink-soft)] mt-2">
-          Own a pop-up business?{' '}
-          <Link href="/list-your-business" className="underline">Claim your spot</Link>
-        </p>
-      )}
+      <p className="text-xs text-[var(--ink-soft)] mt-2">
+        Own a pop-up business?{' '}
+        <Link href="/list-your-business" className="underline">Claim your spot</Link>
+      </p>
     </main>
   )
 }
+

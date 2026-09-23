@@ -1,15 +1,17 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase, WorkerProfile } from '@/lib/supabase'
+import { supabase, WorkerProfile, PopupBusiness } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { Session } from '@supabase/supabase-js'
+import { CATEGORY_META, Category } from '@/lib/categories'
 
 export default function AccountPage() {
   const router = useRouter()
   const [session, setSession] = useState<Session | null>(null)
   const [worker, setWorker] = useState<WorkerProfile | null>(null)
+  const [business, setBusiness] = useState<PopupBusiness | null>(null)
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -20,13 +22,13 @@ export default function AccountPage() {
       }
       setSession(data.session)
 
-      const { data: workerData } = await supabase
-        .from('worker_profiles')
-        .select('*')
-        .eq('user_id', data.session.user.id)
-        .maybeSingle()
+      const [{ data: workerData }, { data: businessData }] = await Promise.all([
+        supabase.from('worker_profiles').select('*').eq('user_id', data.session.user.id).maybeSingle(),
+        supabase.from('popup_businesses').select('*').eq('owner_id', data.session.user.id).maybeSingle(),
+      ])
 
       setWorker(workerData)
+      setBusiness(businessData)
       setLoaded(true)
     })
   }, [router])
@@ -73,16 +75,50 @@ export default function AccountPage() {
 
       <div className="mt-6 border-2 border-[var(--ink)] rounded-xl p-6 bg-white">
         <h2 className="font-display text-lg font-semibold">Business listing</h2>
-        <p className="text-sm text-[var(--ink-soft)] mt-2">
-          Business listings are still set up manually while we build self-serve editing.
-          Email us if you need changes to yours.
-        </p>
-        <a
-          href="mailto:popupspotlightinfo@gmail.com"
-          className="text-sm underline mt-3 inline-block"
-        >
-          popupspotlightinfo@gmail.com
-        </a>
+        {business ? (
+          <>
+            <div className="flex items-center justify-between mt-2">
+              <p className="font-medium">{business.name}</p>
+              <span
+                className="text-xs font-medium px-2.5 py-1 rounded-full"
+                style={{
+                  background: CATEGORY_META[business.category as Category]?.bg,
+                  color: CATEGORY_META[business.category as Category]?.text,
+                }}
+              >
+                {CATEGORY_META[business.category as Category]?.label ?? business.category}
+              </span>
+            </div>
+            <p className="text-xs text-[var(--ink-soft)] mt-1">
+              Status: {business.status} · Plan: {business.tier}
+            </p>
+            <Link href={`/business/${business.id}`} className="text-sm underline mt-3 inline-block">
+              View your public listing →
+            </Link>
+            <p className="text-xs text-[var(--ink-soft)] mt-4">
+              Self-serve editing (photos, description) is coming soon. For now, email us
+              for any changes.
+            </p>
+            <a
+              href="mailto:popupspotlightinfo@gmail.com"
+              className="text-sm underline mt-1 inline-block"
+            >
+              popupspotlightinfo@gmail.com
+            </a>
+          </>
+        ) : (
+          <>
+            <p className="text-sm text-[var(--ink-soft)] mt-2">
+              No business listed on this account yet.
+            </p>
+            <Link
+              href="/list-your-business"
+              className="mt-4 inline-block px-5 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90"
+            >
+              Claim your spot
+            </Link>
+          </>
+        )}
       </div>
 
       <button onClick={handleLogout} className="mt-8 text-sm text-[var(--ink-soft)] underline">
