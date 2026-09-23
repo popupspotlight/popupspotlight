@@ -19,7 +19,7 @@ const PILLARS = [
   },
 ]
 
-const STEPS = ['You', 'Business', 'Location', 'Your story']
+const STEPS = ['Business', 'Your story', 'Location', 'You']
 
 function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
   const [step, setStep] = useState(0)
@@ -28,16 +28,16 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
   const categories = Object.keys(CATEGORY_META) as Category[]
 
   const [form, setForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
     business_name: '',
     category: '',
     years_in_business: '',
+    description: '',
     city: '',
     state: '',
     zip: '',
-    description: '',
+    name: '',
+    email: '',
+    phone: '',
   })
 
   function update(field: string, value: string) {
@@ -45,8 +45,8 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
   }
 
   function stepValid() {
-    if (step === 0) return form.name.trim() && form.email.trim()
-    if (step === 1) return form.business_name.trim() && form.category
+    if (step === 0) return form.business_name.trim() && form.category
+    if (step === 1) return true
     if (step === 2) return form.city.trim() && form.state.trim() && form.zip.trim()
     return true
   }
@@ -80,7 +80,7 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
   const inputClass = 'w-full border-2 border-[var(--line)] rounded-lg px-3 py-2 mt-1'
 
   return (
-    <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg">
+    <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg mx-auto text-left">
       <div className="flex items-center gap-2 mb-5">
         {STEPS.map((label, i) => (
           <div key={label} className="flex-1">
@@ -93,23 +93,6 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
       </p>
 
       {step === 0 && (
-        <div className="space-y-3">
-          <div>
-            <label className="text-xs text-[var(--ink-soft)]">Your name</label>
-            <input value={form.name} onChange={(e) => update('name', e.target.value)} className={inputClass} />
-          </div>
-          <div>
-            <label className="text-xs text-[var(--ink-soft)]">Email</label>
-            <input type="email" value={form.email} onChange={(e) => update('email', e.target.value)} className={inputClass} />
-          </div>
-          <div>
-            <label className="text-xs text-[var(--ink-soft)]">Phone</label>
-            <input value={form.phone} onChange={(e) => update('phone', e.target.value)} className={inputClass} />
-          </div>
-        </div>
-      )}
-
-      {step === 1 && (
         <div className="space-y-3">
           <div>
             <label className="text-xs text-[var(--ink-soft)]">Business name</label>
@@ -134,6 +117,21 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
               <option value="3-5 years">3-5 years</option>
               <option value="5+ years">5+ years</option>
             </select>
+          </div>
+        </div>
+      )}
+
+      {step === 1 && (
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">Tell customers what makes your pop-up special</label>
+            <textarea
+              value={form.description}
+              onChange={(e) => update('description', e.target.value)}
+              placeholder="What you offer, what makes you different, the experience customers can expect"
+              className={`${inputClass} min-h-[110px]`}
+            />
+            <p className="text-xs text-[var(--ink-soft)] mt-1">This becomes your public listing description.</p>
           </div>
         </div>
       )}
@@ -163,14 +161,16 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
       {step === 3 && (
         <div className="space-y-3">
           <div>
-            <label className="text-xs text-[var(--ink-soft)]">Tell customers what makes your pop-up special</label>
-            <textarea
-              value={form.description}
-              onChange={(e) => update('description', e.target.value)}
-              placeholder="What you offer, what makes you different, the experience customers can expect"
-              className={`${inputClass} min-h-[110px]`}
-            />
-            <p className="text-xs text-[var(--ink-soft)] mt-1">This becomes your public listing description.</p>
+            <label className="text-xs text-[var(--ink-soft)]">Your name</label>
+            <input value={form.name} onChange={(e) => update('name', e.target.value)} className={inputClass} />
+          </div>
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">Email</label>
+            <input type="email" value={form.email} onChange={(e) => update('email', e.target.value)} className={inputClass} />
+          </div>
+          <div>
+            <label className="text-xs text-[var(--ink-soft)]">Phone</label>
+            <input value={form.phone} onChange={(e) => update('phone', e.target.value)} className={inputClass} />
           </div>
         </div>
       )}
@@ -200,7 +200,7 @@ function LeadForm({ onSubmitted }: { onSubmitted: () => void }) {
             disabled={loading}
             className="flex-1 py-2.5 rounded-full font-medium border-2 border-[var(--ink)] bg-[var(--gold)] text-[var(--ink)] hover:opacity-90 disabled:opacity-50"
           >
-            {loading ? 'Submitting…' : 'List my business free'}
+            {loading ? 'Submitting…' : 'Claim My Spot'}
           </button>
         )}
       </div>
@@ -212,44 +212,45 @@ export default function ListYourBusinessPage() {
   const [submitted, setSubmitted] = useState(false)
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-16">
-      <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight max-w-2xl">
-        List your pop-up business — free.
+    <main className="max-w-3xl mx-auto px-6 py-16 text-center">
+      <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
+        Claim Your Spot
       </h1>
-      <p className="mt-4 text-lg text-[var(--ink-soft)] max-w-xl">
-        Get discovered by people planning private and corporate events, hire gig talent
-        when you need extra hands, and win new bookings by bidding directly on events
-        people post. Your listing costs nothing — you only pay for the extras you
-        actually use.
+      <p className="mt-3 text-[var(--ink-soft)]">
+        Free to list — takes less than a minute.
       </p>
 
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-5">
-        {PILLARS.map((p) => (
-          <div key={p.title} className="border-2 border-[var(--line)] rounded-xl p-5 bg-white">
-            <h2 className="font-display text-base font-semibold">{p.title}</h2>
-            <p className="text-sm text-[var(--ink-soft)] mt-2">{p.description}</p>
+      <div className="mt-8">
+        {!submitted ? (
+          <LeadForm onSubmitted={() => setSubmitted(true)} />
+        ) : (
+          <div className="border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg mx-auto text-left">
+            <p className="font-medium">You're all set.</p>
+            <p className="text-sm text-[var(--ink-soft)] mt-1">
+              We'll get your free listing live within a day and follow up by email. Once
+              you're listed, you can post jobs and bid on events any time — we'll walk you
+              through pricing right when you're ready to use them.
+            </p>
           </div>
-        ))}
+        )}
       </div>
 
-      {!submitted ? (
-        <div className="mt-10">
-          <h2 className="font-display text-lg font-semibold mb-1">List for free</h2>
-          <p className="text-sm text-[var(--ink-soft)] mb-4">
-            Takes less than a minute. No credit card, no commitment.
-          </p>
-          <LeadForm onSubmitted={() => setSubmitted(true)} />
+      <div className="mt-16 text-left">
+        <p className="text-lg text-[var(--ink-soft)] max-w-xl mx-auto text-center">
+          Get discovered by people planning private and corporate events, hire gig talent
+          when you need extra hands, and win new bookings by bidding directly on events
+          people post.
+        </p>
+
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {PILLARS.map((p) => (
+            <div key={p.title} className="border-2 border-[var(--line)] rounded-xl p-5 bg-white">
+              <h2 className="font-display text-base font-semibold">{p.title}</h2>
+              <p className="text-sm text-[var(--ink-soft)] mt-2">{p.description}</p>
+            </div>
+          ))}
         </div>
-      ) : (
-        <div className="mt-10 border-2 border-[var(--ink)] rounded-xl p-6 bg-white max-w-lg">
-          <p className="font-medium">You're all set.</p>
-          <p className="text-sm text-[var(--ink-soft)] mt-1">
-            We'll get your free listing live within a day and follow up by email. Once
-            you're listed, you can post jobs and bid on events any time — we'll walk you
-            through pricing right when you're ready to use them.
-          </p>
-        </div>
-      )}
+      </div>
     </main>
   )
 }
